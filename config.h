@@ -1,5 +1,3 @@
-#include "color.h"
-
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -16,19 +14,19 @@
 #define G_LUNA 1.62
 #define B 1.0                       // Coeficiente de amortiguación
 
-#define TAM 26                      // Tamano masa
+#define TAM 12                      // Tamano masa
 
 #define COLOR_CONSTRUCCION COLOR_ROJO
 #define COLOR_MASA COLOR_VIOLETA
 #define COLOR_MASA_FIJA COLOR_VERDE
 #define COLOR_RESORTE COLOR_CELESTE
 
-#define TOL_MASAS 18         // Tolerancia de error al clickear un objeto
+#define TOL_MASAS TAM/2         // Tolerancia de error al clickear un objeto
 #define TOL_RESORTES 7.0
 
 #define TOL_CLIC 3
 
-#define LO_MAX 150                    // Máxima longitud de un resorte
+#define LO_MAX 150                  // Máxima longitud de un resorte
 #define FACTOR_ESCALA 50            // Conversión entre coordenadas de pantalla y mundo
 
 #define MAXIMO_ESTIRAMIENTO 0.13    // Porcentaje de estiramiento de un resorte para perder

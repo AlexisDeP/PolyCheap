@@ -1,14 +1,9 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
-#include "masa.h"
-#include "resorte.h"
 #include "malla.h"
-#include "calculo.h"
-#include "color.h"
-#include "lista.h"
 #include "dibujo.h"
-#include "juego.h"
+#include "calculo.h"
 #include "config.h"
 
 #ifdef TTF
@@ -55,7 +50,7 @@ int main(int argc, char *argv[]) {
     int dormir = 0;
 
     // BEGIN código del alumno
-    bool estoy_dibujando = false;
+    //bool estoy_dibujando = false;
     int coordx = 0, coordy = 0;
     int iniciox, inicioy;
 
@@ -63,7 +58,7 @@ int main(int argc, char *argv[]) {
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
 
-    masa_t *masa_fija = nueva_masa_fija(malla_principal, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
+    //masa_t *masa_fija = nueva_masa_fija(malla_principal, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
 
     bool simulando = false;
     bool desplazando = false;
@@ -165,7 +160,7 @@ int main(int argc, char *argv[]) {
                         if(!dibujando){
                             if(masa != NULL && !es_fija(masa)){
                                 borrar_masa(malla_principal, masa);
-                                eliminar_resortes_conectados(malla_principal, masa);
+                                borrar_resortes_conectados(malla_principal, masa);
                             }else if(resorte != NULL){
                                 borrar_resorte(malla_principal, resorte);
                             }else{

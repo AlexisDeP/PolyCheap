@@ -1,6 +1,8 @@
 #ifndef MASA_H
 #define MASA_H
 
+#include <stdbool.h>
+
 #include "color.h"
 
 typedef struct masa masa_t;

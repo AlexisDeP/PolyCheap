@@ -26,31 +26,21 @@ struct malla {
     lista_t* masas;
 };
 
-static malla_t *_crear_malla(){
-    malla_t *malla = malloc(sizeof(malla_t));
-    if(malla == NULL) return NULL;
-    return malla;
-}
 
+//static void _renovar_longitud_resortes(malla_t *malla, masa_t *masa) {
+//   lista_iter_t *iter = lista_iter_crear(malla->resortes);
+//    while (!lista_iter_al_final(iter)) {
+//        resorte_t *resorte = lista_iter_ver_actual(iter);
+//        if (resorte->masa1 == masa || resorte->masa2 == masa) {
+//            float nueva_longitud = distancia_entre_masas(resorte->masa1, resorte->masa2);
+//            resorte->longitud = nueva_longitud;
+//        }
+//        lista_iter_avanzar(iter);
+//    }
+//    lista_iter_destruir(iter);
+//}                  
 
-
-bool borrar_masa(malla_t *malla, masa_t *masa) {
-    lista_iter_t *iter = lista_iter_crear(malla->masas);
-    while (!lista_iter_al_final(iter)) {
-        masa_t *masa_actual = lista_iter_ver_actual(iter);
-        if (masa_actual == masa) {
-            _borrar_masa(masa_actual);
-            lista_iter_borrar(iter);
-            lista_iter_destruir(iter);
-            return true;
-        }
-        lista_iter_avanzar(iter);
-    }
-    lista_iter_destruir(iter);
-    return false;
-} 
-
-bool insertar_masa(malla_t *malla, masa_t *masa) {
+static void insertar_masa(malla_t *malla, masa_t *masa) {
     size_t nueva_id = 1;  // Número inicial para la nueva ID
     lista_iter_t *iter = lista_iter_crear(malla->masas);
 
@@ -68,22 +58,63 @@ bool insertar_masa(malla_t *malla, masa_t *masa) {
         }
     }
 
-    bool insercion_exitosa = lista_iter_insertar(iter, masa);
+    lista_iter_insertar(iter, masa);
     lista_iter_destruir(iter);
 
-    return insercion_exitosa;
 }
+
+static bool verificar_longitud_resortes(malla_t *malla, masa_t *masa, float longitud_maxima) {
+    lista_iter_t *iter = lista_iter_crear(malla->resortes);
+    if (iter == NULL) return false;
+    
+    while (!lista_iter_al_final(iter)) {
+        resorte_t *resorte = lista_iter_ver_actual(iter);
+        masa_t *masa1 = resorte->masa1;
+        masa_t *masa2 = resorte->masa2;
+        
+        if (masa1 == masa || masa2 == masa) {
+            float longitud = distancia_puntos(masa1->x, masa1->y, masa2->x, masa2->y);
+            
+            if (longitud > longitud_maxima) {
+                lista_iter_destruir(iter);
+                return false; // La longitud de un resorte se excede, retornar false
+            }
+        }
+        
+        lista_iter_avanzar(iter);
+    }
+    
+    lista_iter_destruir(iter);
+    return true; // La longitud de todos los resortes es válida, retornar true
+}
+
+static bool insertar_resorte(malla_t *malla, resorte_t *resorte) {
+    return lista_insertar_ultimo(malla->resortes, resorte);
+}   
+
+void borrar_masa(malla_t *malla, masa_t *masa) {
+    lista_iter_t *iter = lista_iter_crear(malla->masas);
+    while (!lista_iter_al_final(iter)) {
+        masa_t *masa_actual = lista_iter_ver_actual(iter);
+        if (masa_actual == masa) {
+            _borrar_masa(masa_actual);
+            lista_iter_borrar(iter);
+            lista_iter_destruir(iter);
+            return;
+        }
+        lista_iter_avanzar(iter);
+    }
+    lista_iter_destruir(iter);
+} 
 
 masa_t *nueva_masa(malla_t *malla, int x, int y, int tam, Color color){
     masa_t *masa = crear_masa(x, y, tam, color);
-    if(masa == NULL) return NULL;
     insertar_masa(malla, masa);
     return masa;
 }
 
 masa_t *nueva_masa_fija(malla_t *malla, int x, int y, int tam, Color color){
     masa_t *masa = crear_masa_fija(x, y, tam, color);
-    if(masa == NULL) return NULL;
     insertar_masa(malla, masa);
     return masa;
 }
@@ -168,7 +199,7 @@ resorte_t *detectar_resorte(malla_t *malla, int x, int y, float tolerancia) {
     return NULL;
 }
 
-bool borrar_resorte(malla_t *malla, resorte_t *resorte) {
+void borrar_resorte(malla_t *malla, resorte_t *resorte) {
     lista_iter_t *iter = lista_iter_crear(malla->resortes);
     while (!lista_iter_al_final(iter)) {
         resorte_t *resorte_actual = lista_iter_ver_actual(iter);
@@ -176,15 +207,14 @@ bool borrar_resorte(malla_t *malla, resorte_t *resorte) {
             _borrar_resorte(resorte_actual);
             lista_iter_borrar(iter);
             lista_iter_destruir(iter);
-            return true;
+            return;
         }
         lista_iter_avanzar(iter);
     }
     lista_iter_destruir(iter);
-    return false;
 }                           
 
-void eliminar_resortes_conectados(malla_t *malla, masa_t *masa) {
+void borrar_resortes_conectados(malla_t *malla, masa_t *masa) {
     lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
     if (iter_resortes == NULL) return;
 
@@ -200,17 +230,11 @@ void eliminar_resortes_conectados(malla_t *malla, masa_t *masa) {
     }
     
     lista_iter_destruir(iter_resortes);
-}
+}                          
 
-bool insertar_resorte(malla_t *malla, resorte_t *resorte) {
-    return lista_insertar_ultimo(malla->resortes, resorte);
-}                             
-
-resorte_t *nuevo_resorte(malla_t *malla, masa_t *m1, masa_t *m2, Color color){
+void nuevo_resorte(malla_t *malla, masa_t *m1, masa_t *m2, Color color){
     resorte_t *resorte = crear_resorte(m1, m2, color);
-    if(resorte == NULL) return NULL;
     insertar_resorte(malla, resorte);
-    return resorte;
 }
 
 bool masas_conectadas(malla_t *malla, masa_t *m1, masa_t *m2) {
@@ -238,44 +262,6 @@ bool excede_max_longitud(malla_t *malla, masa_t *masa, int x, int y, float maxim
     float distancia = distancia_puntos(masa->x, masa->y, x, y);
     return (distancia > maxima_longitud);
 }
-
-bool verificar_longitud_resortes(malla_t *malla, masa_t *masa, float longitud_maxima) {
-    lista_iter_t *iter = lista_iter_crear(malla->resortes);
-    if (iter == NULL) return false;
-    
-    while (!lista_iter_al_final(iter)) {
-        resorte_t *resorte = lista_iter_ver_actual(iter);
-        masa_t *masa1 = resorte->masa1;
-        masa_t *masa2 = resorte->masa2;
-        
-        if (masa1 == masa || masa2 == masa) {
-            float longitud = distancia_puntos(masa1->x, masa1->y, masa2->x, masa2->y);
-            
-            if (longitud > longitud_maxima) {
-                lista_iter_destruir(iter);
-                return false; // La longitud de un resorte se excede, retornar false
-            }
-        }
-        
-        lista_iter_avanzar(iter);
-    }
-    
-    lista_iter_destruir(iter);
-    return true; // La longitud de todos los resortes es válida, retornar true
-}
-
-static void _renovar_longitud_resortes(malla_t *malla, masa_t *masa) {
-    lista_iter_t *iter = lista_iter_crear(malla->resortes);
-    while (!lista_iter_al_final(iter)) {
-        resorte_t *resorte = lista_iter_ver_actual(iter);
-        if (resorte->masa1 == masa || resorte->masa2 == masa) {
-            float nueva_longitud = distancia_entre_masas(resorte->masa1, resorte->masa2);
-            resorte->longitud = nueva_longitud;
-        }
-        lista_iter_avanzar(iter);
-    }
-    lista_iter_destruir(iter);
-}                  
 
 malla_t *crear_malla() {
     malla_t *nueva_malla = malloc(sizeof(malla_t));

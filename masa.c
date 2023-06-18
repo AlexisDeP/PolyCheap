@@ -17,18 +17,18 @@ static masa_t *_crear_masa(){
 }
 
 masa_t *crear_masa(int x, int y, int tam, Color color){
-    masa_t *nueva_masa = _crear_masa();
-    if (nueva_masa == NULL) return NULL;
+    masa_t *masa = _crear_masa();
+    if (masa == NULL) return NULL;
     
-    nueva_masa->id = 0;
-    nueva_masa->x = x;
-    nueva_masa->y = y;
-    nueva_masa->tam = tam;
-    nueva_masa->es_fijo = false;
-    nueva_masa->masa = 0.0;
-    nueva_masa->color = color;
+    masa->id = 0;
+    masa->x = x;
+    masa->y = y;
+    masa->tam = tam;
+    masa->es_fijo = false;
+    masa->masa = 0.0;
+    masa->color = color;
     
-    return nueva_masa;
+    return masa;
 }
 
 void _borrar_masa(masa_t *masa){
@@ -36,18 +36,18 @@ void _borrar_masa(masa_t *masa){
 }
 
 masa_t *crear_masa_fija(int x, int y, int tam, Color color){
-    masa_t *nueva_masa = _crear_masa();
-    if (nueva_masa == NULL) return NULL;
+    masa_t *masa = _crear_masa();
+    if (masa == NULL) return NULL;
     
-    nueva_masa->id = 0;
-    nueva_masa->x = x;
-    nueva_masa->y = y;
-    nueva_masa->tam = tam;
-    nueva_masa->es_fijo = true;
-    nueva_masa->masa = 0.0;
-    nueva_masa->color = color;
+    masa->id = 0;
+    masa->x = x;
+    masa->y = y;
+    masa->tam = tam;
+    masa->es_fijo = true;
+    masa->masa = 0.0;
+    masa->color = color;
     
-    return nueva_masa;
+    return masa;
 }
 
 bool es_fija(masa_t *masa){

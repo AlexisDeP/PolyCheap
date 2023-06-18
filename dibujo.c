@@ -65,3 +65,7 @@ void renderizar_malla(malla_t *malla, SDL_Renderer *renderer) {
     _dibujar_lista_resortes(malla, renderer);
 }
 
+void planear_resorte(masa_t *masa, int x, int y, Color color_construccion, SDL_Renderer *renderer) {
+    _color_render(renderer, color_construccion, 0x00);
+    SDL_RenderDrawLine(renderer, masa->x, masa->y, x, y);
+}

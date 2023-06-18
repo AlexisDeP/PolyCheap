@@ -3,6 +3,7 @@
         "color.h": "c",
         "lista.h": "c",
         "calculo.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "malla.h": "c"
     }
 }

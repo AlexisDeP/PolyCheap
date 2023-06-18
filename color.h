@@ -1,7 +1,7 @@
-#include <SDL2/SDL.h>
-
 #ifndef COLOR_H
 #define COLOR_H
+
+#include <SDL2/SDL.h>
 
 typedef enum color {
 
@@ -15,7 +15,6 @@ typedef enum color {
     COLOR_DEFAULT = 0xBBBBBB,
 
 } Color;
-
 
 void _color_render(SDL_Renderer *renderer, Color color, uint8_t opacidad);
 
