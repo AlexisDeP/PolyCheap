@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "color.h": "c",
+        "lista.h": "c",
+        "calculo.h": "c",
+        "config.h": "c"
+    }
+}
