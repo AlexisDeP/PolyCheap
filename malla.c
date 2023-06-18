@@ -76,12 +76,14 @@ bool insertar_masa(malla_t *malla, masa_t *masa) {
 
 masa_t *nueva_masa(malla_t *malla, int x, int y, int tam, Color color){
     masa_t *masa = crear_masa(x, y, tam, color);
+    if(masa == NULL) return NULL;
     insertar_masa(malla, masa);
     return masa;
 }
 
 masa_t *nueva_masa_fija(malla_t *malla, int x, int y, int tam, Color color){
     masa_t *masa = crear_masa_fija(x, y, tam, color);
+    if(masa == NULL) return NULL;
     insertar_masa(malla, masa);
     return masa;
 }
@@ -206,6 +208,7 @@ bool insertar_resorte(malla_t *malla, resorte_t *resorte) {
 
 resorte_t *nuevo_resorte(malla_t *malla, masa_t *m1, masa_t *m2, Color color){
     resorte_t *resorte = crear_resorte(m1, m2, color);
+    if(resorte == NULL) return NULL;
     insertar_resorte(malla, resorte);
     return resorte;
 }
