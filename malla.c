@@ -135,6 +135,20 @@ masa_t *detectar_masa(malla_t *malla, int x, int y, int tolerancia) {
     return NULL;
 }
 
+masa_t *obtener_masa(malla_t *malla, int x, int y) {
+    lista_iter_t *iter = lista_iter_crear(malla->masas);
+    while (!lista_iter_al_final(iter)){
+        masa_t *masa_actual = lista_iter_ver_actual(iter);
+        if(x == masa_actual->x && y == masa_actual->y){
+            lista_iter_destruir(iter);
+            return masa_actual;
+        }
+        lista_iter_avanzar(iter);
+    }
+    lista_iter_destruir(iter);
+    return NULL;
+}
+
 void mover_masa(malla_t *malla, masa_t *masa, int x, int y, float longitud_maxima) {
     lista_iter_t *iter = lista_iter_crear(malla->masas);
     if (iter == NULL) return;
@@ -199,6 +213,11 @@ resorte_t *detectar_resorte(malla_t *malla, int x, int y, float tolerancia) {
     return NULL;
 }
 
+void obtener_masas_resorte(resorte_t *resorte, masa_t **mj, masa_t **mk){
+    *mj = resorte->masa1;
+    *mk = resorte->masa2;
+}
+
 void borrar_resorte(malla_t *malla, resorte_t *resorte) {
     lista_iter_t *iter = lista_iter_crear(malla->resortes);
     while (!lista_iter_al_final(iter)) {
@@ -261,6 +280,14 @@ bool masas_conectadas(malla_t *malla, masa_t *m1, masa_t *m2) {
 bool excede_max_longitud(malla_t *malla, masa_t *masa, int x, int y, float maxima_longitud) {
     float distancia = distancia_puntos(masa->x, masa->y, x, y);
     return (distancia > maxima_longitud);
+}
+
+size_t obtener_cantidad_masas(const malla_t* malla) {
+    return lista_largo(malla->masas);
+}
+
+size_t obtener_cantidad_resortes(const malla_t* malla){
+    return lista_largo(malla->resortes);
 }
 
 malla_t *crear_malla() {

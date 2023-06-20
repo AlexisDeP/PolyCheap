@@ -32,3 +32,5 @@ float distancia_punto_a_recta(int xp1, int yp1, int xp2, int yp2, int x_punto, i
 
     return numerador / denominador;
 }
+
+

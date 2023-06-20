@@ -11,6 +11,7 @@ struct resorte {
 };
 
 static resorte_t *_crear_resorte(){
+    
     resorte_t *resorte = malloc(sizeof(resorte_t));
     if(resorte == NULL) return NULL;
     return resorte;

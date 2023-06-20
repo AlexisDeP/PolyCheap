@@ -14,7 +14,7 @@
 #define G_LUNA 1.62
 #define B 1.0                       // Coeficiente de amortiguación
 
-#define TAM 12                      // Tamano masa
+#define TAM 22                      // Tamano masa
 
 #define COLOR_CONSTRUCCION COLOR_ROJO
 #define COLOR_MASA COLOR_VIOLETA
@@ -22,7 +22,7 @@
 #define COLOR_RESORTE COLOR_CELESTE
 
 #define TOL_MASAS TAM/2         // Tolerancia de error al clickear un objeto
-#define TOL_RESORTES 7.0
+#define TOL_RESORTES 8.0
 
 #define TOL_CLIC 3
 

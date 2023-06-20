@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 
-        
+
         if(dibujando && en_rango){
             planear_resorte(masa_detectada, coordx, coordy, COLOR_CONSTRUCCION, renderer);
         }
