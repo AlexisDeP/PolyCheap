@@ -5,6 +5,7 @@
 #include "dibujo.h"
 #include "calculo.h"
 #include "config.h"
+#include "simulacion.h"
 
 #ifdef TTF
 #include <SDL2/SDL_ttf.h>
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
 
                         }else if(masa_detectada == NULL){
                             masa = nueva_masa(malla_principal, iniciox, inicioy, TAM, COLOR_MASA);
-                            nuevo_resorte(malla_principal, masa, masa_aux, COLOR_RESORTE);
+                            nuevo_resorte(malla_principal, masa_aux, masa, COLOR_RESORTE);
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
 
@@ -205,9 +206,15 @@ int main(int argc, char *argv[]) {
             planear_resorte(masa_detectada, coordx, coordy, COLOR_CONSTRUCCION, renderer);
         }
 
+        if(simulando){
+            simular_malla(malla_principal, renderer, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX);
+        } else {
+            renderizar_malla(malla_principal, renderer);
+        }
+
         // END código del alumno
 
-        renderizar_malla(malla_principal, renderer);
+        
 
         SDL_RenderPresent(renderer);
         ticks = SDL_GetTicks() - ticks;

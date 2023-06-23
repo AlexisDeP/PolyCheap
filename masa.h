@@ -17,6 +17,8 @@ bool es_fija(masa_t *masa);
 
 void cambiar_color_masa(masa_t *masa, Color color_masa, Color color_masa_fija);
 
+masa_t *_copiar_masa(const masa_t *masa);
+
 float distancia_entre_masas(masa_t *m1, masa_t *m2);
 
 #endif

@@ -14,4 +14,14 @@ float norma(float x, float y);
 // Devuelve la distancia mas cercana de un punto (x, y) a una recta (creada por dos puntos)
 float distancia_punto_a_recta(int xp1, int yp1, int xp2, int yp2, int x_punto, int y_punto);
 
+float Aj(float m, float dt, float b);
+
+float Bj(float bj, float sumatoria_bj);
+
+float bj(float m, float dt, float b, float g, int pos1, int pos2);
+
+float k(float kb, float l0, float pk);
+
+float _sumatoria_bj(float kb, float pk, float pj1, float pk1, float rl0, float rl1);
+
 #endif

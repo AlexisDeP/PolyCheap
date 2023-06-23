@@ -83,4 +83,14 @@ size_t obtener_cantidad_resortes(const malla_t* malla);
 //Post: Devuelve la malla creada.
 malla_t *crear_malla();
 
+bool copiar_malla(const malla_t *malla, malla_t *malla_copia);
+
+void reordenar_malla(const malla_t *malla);
+
+void reordenar_id(const malla_t *malla);
+
+size_t buscar_id_resorte(resorte_t *resorte);
+
+size_t buscar_id_masa(masa_t *masa);
+
 #endif

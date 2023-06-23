@@ -1,12 +1,12 @@
 PROGRAM=programa
 CC=gcc
-CFLAGS=-DTTF -Wall -Werror -pedantic -std=c99
+CFLAGS=-DTTF -pedantic -std=c99
 LDFLAGS=-lSDL2 -lSDL2_ttf -lm
 
 all: $(PROGRAM)
 
-$(PROGRAM): color.o resorte.o masa.o malla.o dibujo.o calculo.o main.o lista.o
-	$(CC) color.o resorte.o masa.o malla.o dibujo.o calculo.o main.o lista.o -o $(PROGRAM) $(LDFLAGS)
+$(PROGRAM): color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o main.o
+	$(CC) color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o main.o -o $(PROGRAM) $(LDFLAGS)
 
 lista.o: lista.c lista.h
 	$(CC) $(CFLAGS) -c lista.c
@@ -32,7 +32,10 @@ juego.o: juego.c juego.h malla.h
 calculo.o: calculo.c calculo.h
 	$(CC) $(CFLAGS) -c calculo.c
 
-main.o: main.c dibujo.h malla.h config.h calculo.h
+simulacion.o: simulacion.c simulacion.h lista.h malla.h calculo.h
+	$(CC) $(CFLAGS) -c simulacion.c
+
+main.o: main.c dibujo.h malla.h config.h calculo.h simulacion.h
 	$(CC) $(CFLAGS) -c main.c
 
 clean:

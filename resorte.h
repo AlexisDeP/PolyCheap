@@ -7,7 +7,9 @@ typedef struct resorte resorte_t;
 
 //Crea un resorte (con un color) que une dos masas.
 //Pre: Las masas tienen que existir.
-resorte_t *crear_resorte(void *m1, void *m2, Color color);
+resorte_t *crear_resorte(void *masa1, void *masa2, Color color);
+
+resorte_t *_copiar_resorte(const resorte_t *resorte);
 
 //Borra un resorte.
 //Pre: el resorte tiene que existir.

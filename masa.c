@@ -58,6 +58,15 @@ void cambiar_color_masa(masa_t *masa, Color color_masa, Color color_masa_fija) {
     masa->color = masa->es_fijo ? color_masa_fija : color_masa;
 }
 
+masa_t *_copiar_masa(const masa_t *masa) {
+    masa_t *masa_copia = crear_masa(masa->x, masa->y, masa->tam, masa->color);
+    masa_copia->id = masa->id;
+    masa_copia->es_fijo = masa->es_fijo;
+    masa_copia->masa = masa->masa;
+
+    return masa_copia;
+}
+
 float distancia_entre_masas(masa_t *m1, masa_t *m2) {
     int dx = m2->x - m1->x;
     int dy = m2->y - m1->y;

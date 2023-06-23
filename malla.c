@@ -282,6 +282,8 @@ bool excede_max_longitud(malla_t *malla, masa_t *masa, int x, int y, float maxim
     return (distancia > maxima_longitud);
 }
 
+
+
 size_t obtener_cantidad_masas(const malla_t* malla) {
     return lista_largo(malla->masas);
 }
@@ -310,4 +312,81 @@ malla_t *crear_malla() {
     }
 
     return nueva_malla;
+}
+
+bool copiar_malla(const malla_t *malla, malla_t *malla_copia) {
+
+    lista_iter_t *iter_masas = lista_iter_crear(malla->masas);
+    lista_iter_t *iter_masas_copia = lista_iter_crear(malla_copia->masas);
+
+    while (!lista_iter_al_final(iter_masas)) {
+
+        masa_t *masa_copia = _copiar_masa(lista_iter_ver_actual(iter_masas));
+        
+        if (!lista_iter_insertar(iter_masas_copia, masa_copia)) {
+            lista_iter_destruir(iter_masas);
+            return false;
+        }
+        
+        lista_iter_avanzar(iter_masas);
+    }
+
+    lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
+    lista_iter_t *iter_resortes_copia = lista_iter_crear(malla_copia->resortes);
+    while (!lista_iter_al_final(iter_resortes)) {
+        resorte_t *resorte_copia = _copiar_resorte(lista_iter_ver_actual(iter_resortes));
+        
+        if (!lista_iter_insertar(iter_resortes_copia, resorte_copia)) {
+            
+            lista_iter_destruir(iter_masas);
+            lista_iter_destruir(iter_resortes);
+            return false;
+        }
+        lista_iter_avanzar(iter_resortes);
+    }
+
+    lista_iter_destruir(iter_masas);
+    lista_iter_destruir(iter_resortes);
+
+    
+    return true;
+}
+
+void reordenar_malla(const malla_t *malla) {
+    lista_iter_t *iter = lista_iter_crear(malla->masas);
+    size_t cant_masas = obtener_cantidad_masas(malla);
+    for(size_t i = 0; i < cant_masas; i++) {
+        masa_t *masa = lista_iter_ver_actual(iter);
+        masa->id = i;
+        lista_iter_avanzar(iter);
+    }
+    lista_iter_destruir(iter);
+}
+
+void reordenar_id(const malla_t *malla) {
+    lista_iter_t *iter_masas = lista_iter_crear(malla->masas);
+    size_t cant_masas = obtener_cantidad_masas(malla);
+    for(size_t i = 0; i < cant_masas; i++) {
+        masa_t *masa = lista_iter_ver_actual(iter_masas);
+        masa->id = i;
+        lista_iter_avanzar(iter_masas);
+    }
+    lista_iter_destruir(iter_masas);
+
+    lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
+    size_t cant_resortes = obtener_cantidad_resortes(malla);
+    for(size_t i = 0; i < cant_resortes; i++) {
+        resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
+        resorte->id = i;
+        lista_iter_avanzar(iter_resortes);
+    }
+    lista_iter_destruir(iter_resortes);
+}
+
+size_t buscar_id_resorte(resorte_t *resorte) {
+    return resorte->id;
+}
+
+size_t buscar_id_masa(masa_t *masa) {
+    return masa->id;
 }

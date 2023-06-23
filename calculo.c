@@ -33,4 +33,22 @@ float distancia_punto_a_recta(int xp1, int yp1, int xp2, int yp2, int x_punto, i
     return numerador / denominador;
 }
 
+float Aj(float m, float dt, float b) {
+    return ((m/(dt*dt))+(b/dt));
+}
 
+float Bj(float bj, float sumatoria_bj) {
+    return (bj + sumatoria_bj);
+}
+
+float bj(float m, float dt, float b, float g, int pos1, int pos2) {
+    return (((m/(dt*dt))*((2*pos1) - pos2))+((b/dt)*pos1) + (m*g));
+}
+
+float k(float kb, float l0, float pk) {
+    return (kb/pow(l0, pk));
+}
+
+float _sumatoria_bj(float kb, float pk, float pj1, float pk1, float rl0, float rl1) {
+    return (k(kb, rl0, pk) * ((rl0 - rl1)/rl1) * (pj1 - pk1));
+}
