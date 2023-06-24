@@ -2,10 +2,11 @@
 
 #include "resorte.h"
 #include "color.h"
+#include "masa.h"
 
 struct resorte {
     size_t id;
-    void *objeto1, *objeto2;
+    masa_t *masa1, *masa2;
     float longitud, k_resorte;
     Color color;
 };
@@ -17,14 +18,14 @@ static resorte_t *_crear_resorte(){
     return resorte;
 }
 
-resorte_t *crear_resorte(void *o1, void *o2, Color color) {
+resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color) {
     resorte_t *resorte = _crear_resorte();
     if (resorte == NULL) return NULL;
     
     resorte->id = 0;  // Asigna un ID adecuado según tus necesidades
-    resorte->objeto1 = o1;
-    resorte->objeto2 = o2;
-    resorte->longitud = 0; //distancia_entre_masas(o1, o2) // Implementa una función para calcular la distancia entre masas, me rehuso
+    resorte->masa1 = masa1;
+    resorte->masa2 = masa2;
+    resorte->longitud = 0; 
     resorte->k_resorte = 0;
     resorte->color = color;  // Define el color por defecto
     
@@ -33,7 +34,11 @@ resorte_t *crear_resorte(void *o1, void *o2, Color color) {
 
 resorte_t *_copiar_resorte(const resorte_t *resorte) {
 
+<<<<<<< HEAD
+    resorte_t *resorte_copia = crear_resorte(resorte->masa1, resorte->masa2, resorte->color);
+=======
     resorte_t *resorte_copia = crear_resorte(resorte->objeto1, resorte->objeto2, resorte->color);
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
     resorte_copia->id = resorte->id;
     resorte_copia->longitud = resorte->longitud;
 

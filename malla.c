@@ -41,25 +41,8 @@ struct malla {
 //}                  
 
 static void insertar_masa(malla_t *malla, masa_t *masa) {
-    size_t nueva_id = 1;  // Número inicial para la nueva ID
-    lista_iter_t *iter = lista_iter_crear(malla->masas);
-
-    // Buscar el primer número disponible iterando desde el menor al mayor
-    while (!lista_iter_al_final(iter)) {
-        masa_t *masa_actual = lista_iter_ver_actual(iter);
-        if (masa_actual->id == nueva_id) {
-            // El número de ID está en uso, incrementar y buscar el siguiente
-            nueva_id++;
-            lista_iter_avanzar(iter);
-        } else {
-            // Se encontró una ID disponible, actualizar la ID de la masa
-            masa->id = nueva_id;
-            break;
-        }
-    }
-
-    lista_iter_insertar(iter, masa);
-    lista_iter_destruir(iter);
+    masa->id = obtener_cantidad_masas(malla);
+    lista_insertar_ultimo(malla->masas, masa);
 
 }
 
@@ -369,15 +352,29 @@ void reordenar_id(const malla_t *malla) {
     for(size_t i = 0; i < cant_masas; i++) {
         masa_t *masa = lista_iter_ver_actual(iter_masas);
         masa->id = i;
+<<<<<<< HEAD
+        
+=======
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
         lista_iter_avanzar(iter_masas);
     }
     lista_iter_destruir(iter_masas);
 
     lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
     size_t cant_resortes = obtener_cantidad_resortes(malla);
+<<<<<<< HEAD
+    
     for(size_t i = 0; i < cant_resortes; i++) {
         resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
         resorte->id = i;
+        resorte->masa1->id = 0;
+        resorte->masa2->id = 1;
+        
+=======
+    for(size_t i = 0; i < cant_resortes; i++) {
+        resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
+        resorte->id = i;
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
         lista_iter_avanzar(iter_resortes);
     }
     lista_iter_destruir(iter_resortes);

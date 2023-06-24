@@ -1,7 +1,12 @@
 PROGRAM=programa
 CC=gcc
+<<<<<<< HEAD
+CFLAGS=-DTTF -pedantic -std=c99 -g
+=======
 CFLAGS=-DTTF -pedantic -std=c99
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
 LDFLAGS=-lSDL2 -lSDL2_ttf -lm
+OBJS = $(SRCS:.c=.o)
 
 all: $(PROGRAM)
 

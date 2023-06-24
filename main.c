@@ -6,9 +6,32 @@
 #include "calculo.h"
 #include "config.h"
 #include "simulacion.h"
+<<<<<<< HEAD
+#include "masa.h"
+#include "resorte.h"
+
+struct masa {
+    size_t id;
+    int x, y, tam;           // FLOAT O INT???
+    bool es_fijo;
+    float masa;
+    Color color;
+};
+
+struct resorte {
+    size_t id;
+    struct masa *masa1, *masa2;
+    float longitud, k_resorte;
+    Color color;
+};
+=======
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
 
 #ifdef TTF
 #include <SDL2/SDL_ttf.h>
+
+
+
 
 void escribir_texto(SDL_Renderer *renderer, TTF_Font *font, const char *s, int x, int y) {
     SDL_Color color = {255, 255, 255};  // Estaría bueno si la función recibe un enumerativo con el color, ¿no?
@@ -128,6 +151,11 @@ int main(int argc, char *argv[]) {
                         }else if(masa_detectada == NULL){
                             masa = nueva_masa(malla_principal, iniciox, inicioy, TAM, COLOR_MASA);
                             nuevo_resorte(malla_principal, masa_aux, masa, COLOR_RESORTE);
+<<<<<<< HEAD
+                            
+                            
+=======
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
 
@@ -137,6 +165,7 @@ int main(int argc, char *argv[]) {
                             
                         }else if(masa_detectada != NULL && !masas_conectadas(malla_principal, masa_aux, masa_detectada)){
                             nuevo_resorte(malla_principal, masa_aux, masa_detectada, COLOR_RESORTE);
+                            
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
 
@@ -187,10 +216,10 @@ int main(int argc, char *argv[]) {
 
         // BEGIN código del alumno
 #ifdef TTF
-        // escribir_texto(renderer, font, "Mono Bridge", 100, 20);
-        // char aux[100];
-        // sprintf(aux, "%03d, %03d", coordx, coordy);
-        // escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
+        //escribir_texto(renderer, font, "Mono Bridge", 100, 20);
+        char aux[100];
+        sprintf(aux, "%03d, %03d", coordx, coordy);
+        escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
 
         if(simulando){
             escribir_texto(renderer, font, "SIMULANDO", 100, 20);
@@ -207,7 +236,11 @@ int main(int argc, char *argv[]) {
         }
 
         if(simulando){
+<<<<<<< HEAD
+            simular_malla(malla_principal, renderer, DURACION_SIMULACION, MASA_TOTAL / 5, DT, B, G, K_BASE, POTENCIA_K, LO_MAX);
+=======
             simular_malla(malla_principal, renderer, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX);
+>>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
         } else {
             renderizar_malla(malla_principal, renderer);
         }
