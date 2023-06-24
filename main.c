@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
 
     malla_t *malla_principal = crear_malla();
     malla_t *malla_simulacion = crear_malla();
+    simulacion_t *simulacion = simu_crear();
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
 
@@ -191,6 +192,7 @@ int main(int argc, char *argv[]) {
                             }else{
                                 simulando = true;
                                 copiar_malla(malla_principal, malla_simulacion);
+                                simulacion = inicializar_simulacion(malla_simulacion);
                             }
                         }else{
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
@@ -233,8 +235,6 @@ int main(int argc, char *argv[]) {
 
         if(simulando){
             reordenar_id(malla_simulacion);
-            simulacion_t *simulacion = simu_crear();
-            simulacion = inicializar_simulacion(malla_simulacion);
             simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX/FACTOR_ESCALA);
             renderizar_malla(malla_simulacion, renderer);
         } else {

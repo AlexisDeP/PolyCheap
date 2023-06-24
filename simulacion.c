@@ -29,8 +29,8 @@ struct malla {
 };
 
 typedef struct posicion {
-    int x;
-    int y;
+    float x;
+    float y;
 } posicion_t;
 
 typedef struct longitud {
@@ -105,22 +105,20 @@ static bool simu_agregar_inst(simulacion_t* simulacion, posicion_t* posiciones, 
 }
 
 static instante_t* simu_inst_ant(simulacion_t* simulacion) {
-    if (simulacion == NULL || lista_esta_vacia(simulacion->instantes)) {
-        return NULL;
-    }
+    lista_iter_t *iter = lista_iter_crear(simulacion->instantes);
+    instante_t *instante1 = lista_iter_ver_actual(iter);
 
-    return lista_iter_ver_actual(lista_iter_crear(simulacion->instantes));
+    lista_iter_destruir(iter);
+    return instante1;
 }
 
 static instante_t* simu_inst_ant2(simulacion_t* simulacion) {
-    if (simulacion == NULL || lista_largo(simulacion->instantes) < 2) return NULL;
-
     lista_iter_t* iter = lista_iter_crear(simulacion->instantes);
     lista_iter_avanzar(iter);
-    instante_t* instante_anterior = lista_iter_ver_actual(iter);
+    instante_t *instante2 = lista_iter_ver_actual(iter);
+;
     lista_iter_destruir(iter);
-
-    return instante_anterior;
+    return instante2;
 }
 
 void destruir_posicion(void* dato) {
@@ -199,8 +197,8 @@ static void agregar_instante(simulacion_t* simulacion, instante_t* instante) {
     lista_iter_avanzar(iter_instantes);
     destruir_instante(lista_iter_borrar(iter_instantes));
     lista_iter_destruir(iter_instantes);
-
     lista_insertar_primero(simulacion->instantes, instante);
+
 }
 
 static instante_t* copiar_instante(const instante_t* instante) {
@@ -242,7 +240,7 @@ simulacion_t* inicializar_simulacion(malla_t* malla) {
         return NULL;
     }
 
-    lista_insertar_primero(simulacion->instantes, primer_instante);
+    lista_insertar_ultimo(simulacion->instantes, primer_instante);
 
     // Crear y agregar el segundo instante igual al primero
     instante_t* segundo_instante = copiar_instante(primer_instante);
@@ -295,8 +293,8 @@ static posicion_t *calcular_pos_act_m(simulacion_t *simu, masa_t *masa, float m,
     float bj_x = bj(m, dt, b, 0, instante1->posiciones[masa->id].x, instante2->posiciones[masa->id].x);
     float bj_y = bj(m, dt, b, g, instante1->posiciones[masa->id].y, instante2->posiciones[masa->id].y);
 
-    size_t pos_x = Bj(bj_x, sumatoria_x) / Aj(m, dt, b);
-    size_t pos_y = Bj(bj_y, sumatoria_y) / Aj(m, dt, b);
+    float pos_x = Bj(bj_x, sumatoria_x) / Aj(m, dt, b);
+    float pos_y = Bj(bj_y, sumatoria_y) / Aj(m, dt, b);
 
     posicion_t *posicion_masa_j = malloc(sizeof(posicion_t));
     if(posicion_masa_j == NULL) return NULL;
@@ -403,7 +401,7 @@ static void convertir_instante_a_malla(instante_t *instante, malla_t *malla, flo
 void simular_malla(malla_t *malla, simulacion_t *simu, float tiempo, float m, float dt, float b, float g, float kb, float pk, float longitud_maxima) {
 
     float mi = m / obtener_cantidad_masas(malla);
-
+    
     instante_t *instante_nuevo = calcular_instante(simu, mi, dt, b, g, kb, pk);
     agregar_instante(simu, instante_nuevo);
     convertir_instante_a_malla(instante_nuevo, malla, longitud_maxima);

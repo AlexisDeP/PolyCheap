@@ -92,7 +92,6 @@ void borrar_masa(malla_t *malla, masa_t *masa) {
 } 
 
 masa_t *nueva_masa(malla_t *malla, float x, float y, float tam, Color color){
-    printf("%f, %f\n", x, y);
     masa_t *masa = crear_masa(x, y, tam, color);
     insertar_masa(malla, masa);
     return masa;
@@ -343,7 +342,6 @@ bool copiar_malla(const malla_t *malla, malla_t *malla_copia) {
         obtener_masas_resorte(resorte, &mj, &mk);   
         
         resorte_t *resorte_copia = _copiar_resorte(malla_copia, resorte, mj->id, mk->id);
-        printf("R: %zd, M1: %zd, M2:%zd\n", resorte_copia->id, resorte_copia->masa1->id, resorte_copia->masa2->id);
         lista_insertar_ultimo(malla_copia->resortes, resorte_copia);
 
         lista_iter_avanzar(iter_resortes);
