@@ -10,7 +10,6 @@ typedef struct resorte resorte_t;
 //Pre: Las masas tienen que existir.
 resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color);
 
-resorte_t *_copiar_resorte(const resorte_t *resorte);
 
 //Borra un resorte.
 //Pre: el resorte tiene que existir.

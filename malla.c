@@ -72,6 +72,7 @@ static bool verificar_longitud_resortes(malla_t *malla, masa_t *masa, float long
 }
 
 static bool insertar_resorte(malla_t *malla, resorte_t *resorte) {
+    resorte->id = obtener_cantidad_resortes(malla);
     return lista_insertar_ultimo(malla->resortes, resorte);
 }   
 
@@ -95,6 +96,19 @@ masa_t *nueva_masa(malla_t *malla, float x, float y, float tam, Color color){
     masa_t *masa = crear_masa(x, y, tam, color);
     insertar_masa(malla, masa);
     return masa;
+}
+
+static masa_t *obtener_masa_id(const malla_t *malla, size_t id_masa) {
+    lista_iter_t *iter_masas = lista_iter_crear(malla->masas);
+    while(!lista_iter_al_final(iter_masas)) {
+        masa_t *masa = lista_iter_ver_actual(iter_masas);
+        if(masa->id == id_masa) {
+            return masa;
+        }
+
+        lista_iter_avanzar(iter_masas);
+    }
+    return NULL;
 }
 
 masa_t *nueva_masa_fija(malla_t *malla, float x, float y, float tam, Color color){
@@ -240,6 +254,20 @@ void nuevo_resorte(malla_t *malla, masa_t *m1, masa_t *m2, Color color){
     insertar_resorte(malla, resorte);
 }
 
+static resorte_t *_copiar_resorte(const malla_t *malla_copia, resorte_t *resorte, size_t id_masa1_copia, size_t id_masa2_copia) {
+    
+    resorte_t *resorte_copia = crear_resorte(resorte->masa1, resorte->masa2, resorte->color);
+    resorte_copia->id = resorte->id;
+    resorte_copia->longitud = resorte->longitud;
+    masa_t *masa1_copia = obtener_masa_id(malla_copia, id_masa1_copia);
+    resorte_copia->masa1 = masa1_copia;
+    masa_t *masa2_copia = obtener_masa_id(malla_copia, id_masa2_copia);
+    resorte_copia->masa2 = masa2_copia;
+    resorte_copia->k_resorte = resorte->k_resorte;
+
+    return resorte_copia;
+}
+
 bool masas_conectadas(malla_t *malla, masa_t *m1, masa_t *m2) {
     lista_iter_t *iter = lista_iter_crear(malla->resortes);
     if (iter == NULL) return false;
@@ -301,38 +329,29 @@ malla_t *crear_malla() {
 bool copiar_malla(const malla_t *malla, malla_t *malla_copia) {
 
     lista_iter_t *iter_masas = lista_iter_crear(malla->masas);
-    lista_iter_t *iter_masas_copia = lista_iter_crear(malla_copia->masas);
-
     while (!lista_iter_al_final(iter_masas)) {
-
-        masa_t *masa_copia = _copiar_masa(lista_iter_ver_actual(iter_masas));
-        
-        if (!lista_iter_insertar(iter_masas_copia, masa_copia)) {
-            lista_iter_destruir(iter_masas);
-            return false;
-        }
-        
+        masa_t *masa = lista_iter_ver_actual(iter_masas);
+        masa_t *masa_copia = _copiar_masa(masa);
+        lista_insertar_ultimo(malla_copia->masas, masa_copia);
         lista_iter_avanzar(iter_masas);
     }
 
+    masa_t *mj, *mk;
     lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
-    lista_iter_t *iter_resortes_copia = lista_iter_crear(malla_copia->resortes);
     while (!lista_iter_al_final(iter_resortes)) {
-        resorte_t *resorte_copia = _copiar_resorte(lista_iter_ver_actual(iter_resortes));
+        resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
+        obtener_masas_resorte(resorte, &mj, &mk);   
         
-        if (!lista_iter_insertar(iter_resortes_copia, resorte_copia)) {
-            
-            lista_iter_destruir(iter_masas);
-            lista_iter_destruir(iter_resortes);
-            return false;
-        }
+        resorte_t *resorte_copia = _copiar_resorte(malla_copia, resorte, mj->id, mk->id);
+        printf("R: %zd, M1: %zd, M2:%zd\n", resorte_copia->id, resorte_copia->masa1->id, resorte_copia->masa2->id);
+        lista_insertar_ultimo(malla_copia->resortes, resorte_copia);
+
         lista_iter_avanzar(iter_resortes);
     }
 
     lista_iter_destruir(iter_masas);
     lista_iter_destruir(iter_resortes);
 
-    
     return true;
 }
 
