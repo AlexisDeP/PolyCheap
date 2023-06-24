@@ -34,11 +34,7 @@ resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color) {
 
 resorte_t *_copiar_resorte(const resorte_t *resorte) {
 
-<<<<<<< HEAD
     resorte_t *resorte_copia = crear_resorte(resorte->masa1, resorte->masa2, resorte->color);
-=======
-    resorte_t *resorte_copia = crear_resorte(resorte->objeto1, resorte->objeto2, resorte->color);
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
     resorte_copia->id = resorte->id;
     resorte_copia->longitud = resorte->longitud;
 

@@ -7,9 +7,9 @@
 
 typedef struct masa masa_t;
 
-masa_t *crear_masa(int x, int y, int tam, Color color);
+masa_t *crear_masa(float x, float y, float tam, Color color);
 
-masa_t *crear_masa_fija(int x, int y, int tam, Color color);
+masa_t *crear_masa_fija(float x, float y, float tam, Color color);
 
 void _borrar_masa(masa_t *masa);
 

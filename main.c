@@ -6,13 +6,12 @@
 #include "calculo.h"
 #include "config.h"
 #include "simulacion.h"
-<<<<<<< HEAD
 #include "masa.h"
 #include "resorte.h"
 
 struct masa {
     size_t id;
-    int x, y, tam;           // FLOAT O INT???
+    float x, y, tam;           
     bool es_fijo;
     float masa;
     Color color;
@@ -24,8 +23,6 @@ struct resorte {
     float longitud, k_resorte;
     Color color;
 };
-=======
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
 
 #ifdef TTF
 #include <SDL2/SDL_ttf.h>
@@ -79,6 +76,7 @@ int main(int argc, char *argv[]) {
     int iniciox, inicioy;
 
     malla_t *malla_principal = crear_malla();
+    malla_t *malla_simulacion = crear_malla();
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
 
@@ -102,7 +100,7 @@ int main(int argc, char *argv[]) {
                 iniciox = event.motion.x;
                 inicioy = event.motion.y;
                 if(!simulando){
-                    masa_desplazamiento = detectar_masa(malla_principal, iniciox, inicioy, TOL_MASAS);
+                    masa_desplazamiento = detectar_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
                     if(masa_desplazamiento != NULL && !es_fija(masa_desplazamiento)){
                         desplazando = true;
                     }
@@ -113,8 +111,8 @@ int main(int argc, char *argv[]) {
                 coordy = event.motion.y;
 
                 if(dibujando){
-                    en_rango = !excede_max_longitud(malla_principal, masa_aux, coordx, coordy, LO_MAX);
-                    if(excede_max_longitud(malla_principal, masa_aux, coordx, coordy, LO_MAX)){
+                    en_rango = !excede_max_longitud(malla_principal, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
+                    if(excede_max_longitud(malla_principal, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA)){
                         cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                         en_rango = false;
 
@@ -125,7 +123,7 @@ int main(int argc, char *argv[]) {
                 }
 
                 if(desplazando){
-                    mover_masa(malla_principal, masa_desplazamiento, event.motion.x, event.motion.y, LO_MAX);
+                    mover_masa(malla_principal, masa_desplazamiento, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
                 }
             }
             else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
@@ -135,11 +133,11 @@ int main(int argc, char *argv[]) {
 
                     if(comparar_puntos(iniciox, inicioy, event.motion.x, event.motion.y, TOL_CLIC)){
 
-                        masa_detectada = detectar_masa(malla_principal, event.motion.x, event.motion.y, TOL_MASAS);
+                        masa_detectada = detectar_masa(malla_principal, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
 
                         if(!dibujando){
                             if(masa_detectada == NULL){
-                                nueva_masa(malla_principal, iniciox, inicioy, TAM, COLOR_MASA);
+                                nueva_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
 
                             }else{
                                 masa_aux = masa_detectada;
@@ -149,13 +147,10 @@ int main(int argc, char *argv[]) {
                             dibujando = false;
 
                         }else if(masa_detectada == NULL){
-                            masa = nueva_masa(malla_principal, iniciox, inicioy, TAM, COLOR_MASA);
+                            masa = nueva_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
                             nuevo_resorte(malla_principal, masa_aux, masa, COLOR_RESORTE);
-<<<<<<< HEAD
                             
                             
-=======
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
 
@@ -182,8 +177,8 @@ int main(int argc, char *argv[]) {
             }
             else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
 
-                masa = detectar_masa(malla_principal, iniciox, inicioy, TOL_MASAS);
-                resorte = detectar_resorte(malla_principal, iniciox, inicioy, TOL_RESORTES);
+                masa = detectar_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
+                resorte = detectar_resorte(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_RESORTES/FACTOR_ESCALA);
 
                 if(comparar_puntos(iniciox, inicioy, event.motion.x, event.motion.y, TOL_CLIC)){
                     if(!simulando){
@@ -195,6 +190,7 @@ int main(int argc, char *argv[]) {
                                 borrar_resorte(malla_principal, resorte);
                             }else{
                                 simulando = true;
+                                copiar_malla(malla_principal, malla_simulacion);
                             }
                         }else{
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
@@ -232,15 +228,15 @@ int main(int argc, char *argv[]) {
 
 
         if(dibujando && en_rango){
-            planear_resorte(masa_detectada, coordx, coordy, COLOR_CONSTRUCCION, renderer);
+            planear_resorte(masa_detectada, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, COLOR_CONSTRUCCION, renderer);
         }
 
         if(simulando){
-<<<<<<< HEAD
-            simular_malla(malla_principal, renderer, DURACION_SIMULACION, MASA_TOTAL / 5, DT, B, G, K_BASE, POTENCIA_K, LO_MAX);
-=======
-            simular_malla(malla_principal, renderer, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX);
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
+            reordenar_id(malla_simulacion);
+            simulacion_t *simulacion = simu_crear();
+            simulacion = inicializar_simulacion(malla_simulacion);
+            simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX/FACTOR_ESCALA);
+            renderizar_malla(malla_simulacion, renderer);
         } else {
             renderizar_malla(malla_principal, renderer);
         }

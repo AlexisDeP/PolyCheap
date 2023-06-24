@@ -27,7 +27,7 @@
 #define TOL_CLIC 3
 
 #define LO_MAX 150                  // Máxima longitud de un resorte
-#define FACTOR_ESCALA 50            // Conversión entre coordenadas de pantalla y mundo
+#define FACTOR_ESCALA 50.            // Conversión entre coordenadas de pantalla y mundo
 
 #define MAXIMO_ESTIRAMIENTO 0.13    // Porcentaje de estiramiento de un resorte para perder
 #define MASA_TOTAL 10.0             // Suma de todas las masas de la malla

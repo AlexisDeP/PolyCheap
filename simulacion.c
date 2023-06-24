@@ -10,7 +10,7 @@
 
 struct masa {
     size_t id;
-    int x, y, tam;           // FLOAT O INT???
+    float x, y, tam;           // FLOAT O INT???
     bool es_fijo;
     float masa;
     Color color;
@@ -194,15 +194,13 @@ static instante_t* inicializar_instante_desde_malla(malla_t* malla) {
     return instante;
 }
 
-static void agregar_instante(simulacion_t* simulacion, instante_t* instante) {         // Cuidado con la memoria !!!!!!!!!
-    // Verificar si la simulación tiene más de dos instantes
-    if (lista_largo(simulacion->instantes) >= 2) {
-        // Eliminar el instante más antiguo (el primero de la lista)
-        lista_borrar_primero(simulacion->instantes);
-    }
-    
-    // Agregar el nuevo instante al final de la lista
-    lista_insertar_ultimo(simulacion->instantes, instante);
+static void agregar_instante(simulacion_t* simulacion, instante_t* instante) {         
+    lista_iter_t *iter_instantes = lista_iter_crear(simulacion->instantes);
+    lista_iter_avanzar(iter_instantes);
+    destruir_instante(lista_iter_borrar(iter_instantes));
+    lista_iter_destruir(iter_instantes);
+
+    lista_insertar_primero(simulacion->instantes, instante);
 }
 
 static instante_t* copiar_instante(const instante_t* instante) {
@@ -232,7 +230,7 @@ static instante_t* copiar_instante(const instante_t* instante) {
     return copia;
 }
 
-static simulacion_t* inicializar_simulacion(malla_t* malla) {
+simulacion_t* inicializar_simulacion(malla_t* malla) {
 
     simulacion_t* simulacion = simu_crear();
     simulacion->malla = malla;
@@ -270,7 +268,6 @@ static posicion_t *calcular_pos_act_m(simulacion_t *simu, masa_t *masa, float m,
 
     size_t sumatoria_x = 0;
     size_t sumatoria_y = 0;
-<<<<<<< HEAD
 
     instante_t *instante1 = simu_inst_ant(simu);
     instante_t *instante2 = simu_inst_ant2(simu);
@@ -288,28 +285,6 @@ static posicion_t *calcular_pos_act_m(simulacion_t *simu, masa_t *masa, float m,
             
             size_t id_resorte = buscar_id_resorte(resorte);
             
-=======
-    size_t bj_x = 0;
-    size_t bj_y = 0;
-
-    lista_iter_t *iter = lista_iter_crear(simu->malla->resortes);
-    while (!lista_iter_al_final(iter)) {
-        resorte_t *resorte = lista_iter_ver_actual(iter);
-        
-        obtener_masas_resorte(resorte, &masa_j, &masa_k);
-
-        if(masa_j == masa) {
-            size_t id_masa_j = buscar_id_masa(masa_j);
-            size_t id_masa_k = buscar_id_masa(masa_k);
-            size_t id_resorte = buscar_id_resorte(resorte);
-
-            instante_t *instante1 = simu_inst_ant(simu);
-            instante_t *instante2 = simu_inst_ant2(simu);
-
-            bj_x = bj(m, dt, b, g, instante1->posiciones[id_masa_j].x, instante2->posiciones[id_masa_j].x);
-            bj_y = bj(m, dt, b, g, instante1->posiciones[id_masa_j].y, instante2->posiciones[id_masa_j].y);
-
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
             sumatoria_x += _sumatoria_bj(kb, pk, instante1->posiciones[id_masa_j].x, instante1->posiciones[id_masa_k].x, instante1->longitudes[id_resorte].l0, instante1->longitudes[id_resorte].l);
             sumatoria_y += _sumatoria_bj(kb, pk, instante1->posiciones[id_masa_j].y, instante1->posiciones[id_masa_k].y, instante1->longitudes[id_resorte].l0, instante1->longitudes[id_resorte].l);
         }
@@ -317,12 +292,9 @@ static posicion_t *calcular_pos_act_m(simulacion_t *simu, masa_t *masa, float m,
         lista_iter_avanzar(iter);
     }
 
-<<<<<<< HEAD
     float bj_x = bj(m, dt, b, 0, instante1->posiciones[masa->id].x, instante2->posiciones[masa->id].x);
     float bj_y = bj(m, dt, b, g, instante1->posiciones[masa->id].y, instante2->posiciones[masa->id].y);
 
-=======
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
     size_t pos_x = Bj(bj_x, sumatoria_x) / Aj(m, dt, b);
     size_t pos_y = Bj(bj_y, sumatoria_y) / Aj(m, dt, b);
 
@@ -345,19 +317,11 @@ static longitud_t *crear_longitudes(float l0, float l) {
     return longitud;
 }
 
-static bool insertar_posicion_instante(instante_t* instante, posicion_t* posicion) {
-    size_t nueva_cantidad_masas = instante->cantidad_masas + 1;
+static bool insertar_posicion_instante(instante_t* instante, posicion_t* posicion, size_t id) {
 
-    // Redimensionar el arreglo de posiciones
-    posicion_t* aux = realloc(instante->posiciones, nueva_cantidad_masas * sizeof(posicion_t));
-    if(aux == NULL) return false;
-    posicion_t* nuevas_posiciones = aux;
-
-    instante->posiciones = nuevas_posiciones;
-    instante->posiciones[nueva_cantidad_masas - 1] = *posicion;
-
-    instante->cantidad_masas = nueva_cantidad_masas;
-
+    instante->posiciones[id].x = posicion->x;
+    instante->posiciones[id].y = posicion->y;
+ 
     return true;
 }
 
@@ -378,17 +342,11 @@ static bool insertar_longitud_instante(instante_t* instante, longitud_t* longitu
 }
 
 static instante_t* calcular_instante(simulacion_t *simu, float m, float dt, float b, float g, float kb, float pk) {
-<<<<<<< HEAD
     
     instante_t *nuevo_instante = crear_instante(obtener_cantidad_masas(simu->malla), obtener_cantidad_resortes(simu->malla));
     
     instante_t *instante_1 = simu_inst_ant(simu);
 
-=======
-    instante_t *nuevo_instante = crear_instante(obtener_cantidad_masas(simu->malla), obtener_cantidad_resortes(simu->malla));
-    instante_t *instante_ant = simu_inst_ant(simu);
-    instante_t *instante_ant2 = simu_inst_ant2(simu);
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
     lista_iter_t *iter_masas = lista_iter_crear(simu->malla->masas);
     lista_iter_t *iter_resortes = lista_iter_crear(simu->malla->resortes);
 
@@ -397,11 +355,7 @@ static instante_t* calcular_instante(simulacion_t *simu, float m, float dt, floa
     while(!lista_iter_al_final(iter_masas)){
         masa_t *masa_j = lista_iter_ver_actual(iter_masas);
         posicion_t *posicion_masa = calcular_pos_act_m(simu, masa_j, m, dt, b, g, kb, pk);
-<<<<<<< HEAD
-
-=======
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
-        if(!insertar_posicion_instante(nuevo_instante, posicion_masa)) return NULL;
+        if(!insertar_posicion_instante(nuevo_instante, posicion_masa, masa_j->id)) return NULL;
         lista_iter_avanzar(iter_masas);
     }
     while(!lista_iter_al_final(iter_resortes)){
@@ -409,15 +363,9 @@ static instante_t* calcular_instante(simulacion_t *simu, float m, float dt, floa
         obtener_masas_resorte(lista_iter_ver_actual(iter_resortes), &mj, &mk);
         size_t id_masa_j = buscar_id_masa(mj);
         size_t id_masa_k = buscar_id_masa(mk);
-<<<<<<< HEAD
         size_t l = distancia_puntos(instante_1->posiciones[id_masa_j].x, instante_1->posiciones[id_masa_j].y, 
                                     instante_1->posiciones[id_masa_k].x, instante_1->posiciones[id_masa_k].y);
         longitud_t *longitudes = crear_longitudes(instante_1->longitudes[id_resorte].l0, l);
-=======
-        size_t l = distancia_puntos(instante_ant->posiciones[id_masa_j].x, instante_ant->posiciones[id_masa_j].y, 
-                                    instante_ant->posiciones[id_masa_k].x, instante_ant->posiciones[id_masa_k].y);
-        longitud_t *longitudes = crear_longitudes(instante_ant->longitudes[id_resorte].l0, l);
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
         if(!insertar_longitud_instante(nuevo_instante, longitudes)) return NULL;
         lista_iter_avanzar(iter_resortes);
     }
@@ -452,35 +400,11 @@ static void convertir_instante_a_malla(instante_t *instante, malla_t *malla, flo
     lista_iter_destruir(iter_resortes);
 }
 
-void simular_malla(malla_t *malla, SDL_Renderer *renderer, float tiempo, float m, float dt, float b, float g, float kb, float pk, float longitud_maxima) {
+void simular_malla(malla_t *malla, simulacion_t *simu, float tiempo, float m, float dt, float b, float g, float kb, float pk, float longitud_maxima) {
 
-    reordenar_id(malla);
-<<<<<<< HEAD
-    simulacion_t *simulacion = inicializar_simulacion(malla);
-    if(simulacion == NULL) return;
-    
+    float mi = m / obtener_cantidad_masas(malla);
 
-    size_t iteraciones = (size_t)floor(tiempo/dt);
-    malla_t *malla_graficadora = crear_malla(); 
-    if(!copiar_malla(malla, malla_graficadora)) return;
-    
-    for(size_t i = 0; i < iteraciones; i++) {
-        instante_t *instante_nuevo = calcular_instante(simulacion, m, dt, b, g, kb, pk);
-        agregar_instante(simulacion, instante_nuevo);
-=======
-    simulacion_t *simu = inicializar_simulacion(malla);
-    if(simu == NULL) return;
-
-    size_t iteraciones = (size_t)floor(tiempo/dt);
-    malla_t *malla_graficadora = crear_malla(); 
-    
-    if(!copiar_malla(malla, malla_graficadora)) return;
-    
-    for(size_t i = 0; i < iteraciones; i++) {
-        instante_t *instante_nuevo = calcular_instante(simu, m, dt, b, g, kb, pk);
-        agregar_instante(simu, instante_nuevo);
->>>>>>> 1f999196917812af0c82b6b1ee73828fe78df08a
-        convertir_instante_a_malla(instante_nuevo, malla_graficadora, longitud_maxima);
-        renderizar_malla(malla_graficadora, renderer);
-    }
+    instante_t *instante_nuevo = calcular_instante(simu, mi, dt, b, g, kb, pk);
+    agregar_instante(simu, instante_nuevo);
+    convertir_instante_a_malla(instante_nuevo, malla, longitud_maxima);
 }

@@ -4,7 +4,7 @@
 
 struct masa {
     size_t id;
-    int x, y, tam;           // FLOAT O INT???
+    float x, y, tam;       
     bool es_fijo;
     float masa;
     Color color;
@@ -16,7 +16,7 @@ static masa_t *_crear_masa(){
     return masa;
 }
 
-masa_t *crear_masa(int x, int y, int tam, Color color){
+masa_t *crear_masa(float x, float y, float tam, Color color){
     masa_t *masa = _crear_masa();
     if (masa == NULL) return NULL;
     
@@ -35,7 +35,7 @@ void _borrar_masa(masa_t *masa){
     free(masa);
 }
 
-masa_t *crear_masa_fija(int x, int y, int tam, Color color){
+masa_t *crear_masa_fija(float x, float y, float tam, Color color){
     masa_t *masa = _crear_masa();
     if (masa == NULL) return NULL;
     
@@ -68,8 +68,8 @@ masa_t *_copiar_masa(const masa_t *masa) {
 }
 
 float distancia_entre_masas(masa_t *m1, masa_t *m2) {
-    int dx = m2->x - m1->x;
-    int dy = m2->y - m1->y;
+    float dx = m2->x - m1->x;
+    float dy = m2->y - m1->y;
     return sqrt(dx*dx + dy*dy);
 }
 

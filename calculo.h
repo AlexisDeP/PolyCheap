@@ -3,22 +3,22 @@
 
 //Compara la distancia entre dos puntos (x, y)
 //Post: Devuelve true en caso de que la distancia entre p1 y p2 este de un rango de toleracia, false en caso contrario.
-bool comparar_puntos(int x1, int y1, int x2, int y2, int tolerancia);
+bool comparar_puntos(float x1, float y1, float x2, float y2, float tolerancia);
 
 // Devuelve la distancia entre dos puntos (x, y)
-float distancia_puntos(int x1, int y1, int x2, int y2);
+float distancia_puntos(float x1, float y1, float x2, float y2);
 
 // Devuelve la norma de un vector R2
 float norma(float x, float y);
 
 // Devuelve la distancia mas cercana de un punto (x, y) a una recta (creada por dos puntos)
-float distancia_punto_a_recta(int xp1, int yp1, int xp2, int yp2, int x_punto, int y_punto);
+float distancia_punto_a_recta(float xp1, float yp1, float xp2, float yp2, float x_punto, float y_punto);
 
 float Aj(float m, float dt, float b);
 
 float Bj(float bj, float sumatoria_bj);
 
-float bj(float m, float dt, float b, float g, int pos1, int pos2);
+float bj(float m, float dt, float b, float g, float pos1, float pos2);
 
 float k(float kb, float l0, float pk);
 

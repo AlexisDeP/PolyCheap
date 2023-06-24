@@ -18,31 +18,31 @@ void borrar_masa(malla_t *malla, masa_t *masa);
 //Crea una masa dentro de una malla en una posicion R2, con un tamaño y un color
 //Post: La malla contiene a la masa
 //      Devuelve la masa creada
-masa_t *nueva_masa(malla_t *malla, int x, int y, int tam, Color color);
+masa_t *nueva_masa(malla_t *malla, float x, float y, float tam, Color color);
 
 //Crea una masa dentro una malla en una posicion fija (x, y) con un tamaño y un color.
 //Pre: La malla existe.
 //Post: La malla contiene la masa fija.
 //      Devuelve la masa fija creada.
-masa_t *nueva_masa_fija(malla_t *malla, int x, int y, int tam, Color color);
+masa_t *nueva_masa_fija(malla_t *malla, float x, float y, float tam, Color color);
 
 //Busca una masa dentro de una malla en un rango de tolerancia a un punto (x, y).
 //Pre: La malla existe.
 //Post: Devuelve la masa en caso de encontrarlo, caso contrario devuelve NULL.
-masa_t *detectar_masa(malla_t *malla, int x, int y, int tolerancia);
+masa_t *detectar_masa(malla_t *malla, float x, float y, float tolerancia);
 
-masa_t *obtener_masa(malla_t *malla, int x, int y);
+masa_t *obtener_masa(malla_t *malla, float x, float y);
 
 //Mueve una masa dentro de una malla a una punto (x, y) solo si esta dentro de una longitud maxima permitida.
 //Pre: La malla y la masa existen.
 //     La malla contiene a la masa.
 //Post: La masa se mueve si esta dentro de la longitud maxima, caso contrario no se mueve.
-void mover_masa(malla_t *malla, masa_t *masa, int x, int y, float longitud_maxima);
+void mover_masa(malla_t *malla, masa_t *masa, float x, float y, float longitud_maxima);
 
 //Detecta si existe un resorte dentro de una malla en una punto (x, y) a una distancia inferior a la tolerancia.
 //Pre: La malla existe.
 //Post: Devuelve el resorte en caso de encontrarlo, caso contrario devuelve NULL.
-resorte_t *detectar_resorte(malla_t *malla, int x, int y, float tolerancia);
+resorte_t *detectar_resorte(malla_t *malla, float x, float y, float tolerancia);
 
 void obtener_masas_resorte(resorte_t *resorte, masa_t **mj, masa_t **mk);
 
@@ -72,7 +72,7 @@ bool masas_conectadas(malla_t *malla, masa_t *m1, masa_t *m2);
 //Compara la posicion de una masa a un punto (x, y).
 //Pre: La malla y la masa existen.
 //Post: Devuelve true si excede una longitud maxima, false en caso contrario.
-bool excede_max_longitud(malla_t *malla, masa_t *masa, int x, int y, float maxima_longitud);
+bool excede_max_longitud(malla_t *malla, masa_t *masa, float x, float y, float maxima_longitud);
 
 
 size_t obtener_cantidad_masas(const malla_t* malla);
