@@ -395,3 +395,9 @@ masa_t *buscar_masa_id(malla_t *malla, size_t id_masa) {
     lista_iter_destruir(iter);
     return NULL;
 }
+
+void destruir_malla(malla_t *malla) {
+    lista_destruir(malla->masas, _borrar_masa);
+    lista_destruir(malla->resortes, _borrar_resorte);
+    free(malla);
+}

@@ -96,4 +96,6 @@ size_t buscar_id_masa(masa_t *masa);
 
 masa_t *buscar_masa_id(malla_t *malla, size_t id_masa);
 
+void destruir_malla(malla_t *malla);
+
 #endif

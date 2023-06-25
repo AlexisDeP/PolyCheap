@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     //Simulacion // Nivel
     bool nivel_s = false;
     malla_t *malla_nivel= crear_malla();
-    malla_t *malla_simulacion = crear_malla();
+    malla_t *malla_simulacion;
     simulacion_t *simulacion = simu_crear();
     if(argc == 2) {
         FILE *f_entrada = fopen(argv[1], "rb"); 
@@ -209,6 +209,7 @@ int main(int argc, char *argv[]) {
                                 borrar_resorte(malla_principal, resorte);
                             }else{
                                 simulando = true;
+                                malla_simulacion = crear_malla();
                                 copiar_malla(malla_principal, malla_simulacion);
                                 simulacion = inicializar_simulacion(malla_simulacion);
                             }
@@ -217,6 +218,7 @@ int main(int argc, char *argv[]) {
                             dibujando = false;
                         }
                     }else{
+                        destruir_malla(malla_simulacion);
                         simulando = false;
                     }
                 }
@@ -300,8 +302,6 @@ int main(int argc, char *argv[]) {
         fclose(f_salida);
         return 1;
     }
-
-
     // END código del alumno
 
     SDL_DestroyRenderer(renderer);

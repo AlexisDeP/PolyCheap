@@ -34,6 +34,6 @@ resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color) {
 
 
 
-void _borrar_resorte(resorte_t *resorte){
+void _borrar_resorte(void *resorte){
     free(resorte);
 }

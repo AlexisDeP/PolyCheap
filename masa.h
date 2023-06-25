@@ -11,7 +11,7 @@ masa_t *crear_masa(float x, float y, float tam, Color color);
 
 masa_t *crear_masa_fija(float x, float y, float tam, Color color);
 
-void _borrar_masa(masa_t *masa);
+void _borrar_masa(void *masa);
 
 bool es_fija(masa_t *masa);
 

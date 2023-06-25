@@ -14,6 +14,6 @@ resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color);
 //Borra un resorte.
 //Pre: el resorte tiene que existir.
 //Post: El resorte no existe.
-void _borrar_resorte(resorte_t *resorte);
+void _borrar_resorte(void *resorte);
 
 #endif

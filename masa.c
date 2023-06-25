@@ -31,7 +31,7 @@ masa_t *crear_masa(float x, float y, float tam, Color color){
     return masa;
 }
 
-void _borrar_masa(masa_t *masa){
+void _borrar_masa(void *masa){
     free(masa);
 }
 
