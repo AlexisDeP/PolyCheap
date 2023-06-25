@@ -261,12 +261,17 @@ simulacion_t* inicializar_simulacion(malla_t* malla) {
 }
 
 static posicion_t *calcular_pos_act_m(simulacion_t *simu, masa_t *masa, float m, float dt, float b, float g, float kb, float pk) {
-
     posicion_t *posicion_masa_j = malloc(sizeof(posicion_t));
     if(posicion_masa_j == NULL) return NULL;
 
     instante_t *instante1 = simu_inst_ant(simu);
     instante_t *instante2 = simu_inst_ant2(simu);
+
+    if(masa->es_fijo){
+        posicion_masa_j->x = masa->x;
+        posicion_masa_j->y = masa->y;
+        return posicion_masa_j;
+    }
 
     float sumatoria_x = 0;
     float sumatoria_y = 0;
