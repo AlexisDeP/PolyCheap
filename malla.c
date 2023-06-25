@@ -106,8 +106,16 @@ masa_t *detectar_masa(malla_t *malla, float x, float y, float tolerancia) {
     lista_iter_t *iter = lista_iter_crear(malla->masas);
     while (!lista_iter_al_final(iter)) {
         masa_t *masa_actual = lista_iter_ver_actual(iter);
-        float distancia_x = abs(masa_actual->x - x);
-        float distancia_y = abs(masa_actual->y - y);
+        float distancia_x = masa_actual->x - x;
+        float distancia_y = masa_actual->y - y;
+
+        if (distancia_x < 0) {
+            distancia_x *= -1;
+        }
+        if (distancia_y < 0) {
+            distancia_y *= -1;
+        }
+        
         if (distancia_x <= tolerancia && distancia_y <= tolerancia) {
             lista_iter_destruir(iter);
             return masa_actual;

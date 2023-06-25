@@ -1,6 +1,6 @@
 PROGRAM=programa
 CC=gcc
-CFLAGS=-DTTF -pedantic -std=c99 -g
+CFLAGS=-DTTF -pedantic -std=c99 -Wall -Werror -g
 LDFLAGS=-lSDL2 -lSDL2_ttf -lm
 OBJS = $(SRCS:.c=.o)
 

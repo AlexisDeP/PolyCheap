@@ -5,7 +5,8 @@
 
 typedef enum color {
 
-    COLOR_ROJO = 0x9B4545,      
+    COLOR_ROJO = 0x9B4545,
+    COLOR_ROJO_FUERTE = 0xFF0000,    
     COLOR_CELESTE = 0x34878F,    
     COLOR_GRIS = 0x151515,
     COLOR_BLANCO = 0xFFFFFF,

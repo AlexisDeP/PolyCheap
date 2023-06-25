@@ -21,7 +21,7 @@
 #define COLOR_MASA_FIJA COLOR_VERDE
 #define COLOR_RESORTE COLOR_CELESTE
 
-#define TOL_MASAS TAM/2         // Tolerancia de error al clickear un objeto
+#define TOL_MASAS TAM / 2.0         // Tolerancia de error al clickear un objeto
 #define TOL_RESORTES 8.0
 
 #define TOL_CLIC 3

@@ -26,8 +26,8 @@ struct malla {
 
 void inicializar_nivel(malla_t *malla, int nivel) {
     
-    masa_t *masa_A = crear_masa_fija(100 / 50, 400 / 50, 0.5, COLOR_BLANCO);
-    masa_t *masa_B = crear_masa_fija((nivel * 100) / 50, 400 / 50, 0.5, COLOR_BLANCO);
+    masa_t *masa_A = crear_masa_fija(100 / 50, 400 / 50, 22 / 50.0, COLOR_BLANCO);
+    masa_t *masa_B = crear_masa_fija((nivel * 100) / 50, 400 / 50, 22 / 50.0, COLOR_BLANCO);
 
     insertar_masa(malla, masa_A);
     insertar_masa(malla, masa_B);

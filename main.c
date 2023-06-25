@@ -70,11 +70,15 @@ int main(int argc, char *argv[]) {
 
     // BEGIN código del alumno
     //Simulacion // Nivel
-    bool nivel_s = false;
-    malla_t *malla_nivel= crear_malla();
+    float tiempo = 0;
+    bool construir = true;
+    int nivel = 3;
+    bool paso_de_nivel = false;
+    char niveles[] = "nivel_#.bin";
+    niveles[6] = nivel + '0';
     malla_t *malla_simulacion;
-    simulacion_t *simulacion = simu_crear();
-    if(argc == 2) {
+    simulacion_t *simulacion;
+    /*if(argc == 2) {
         FILE *f_entrada = fopen(argv[1], "rb"); 
 	    if (f_entrada == NULL) {
 		    return 1;
@@ -83,23 +87,21 @@ int main(int argc, char *argv[]) {
 		    return 1;
         }
         fclose(f_entrada);
+        malla_simulacion = crear_malla();
         copiar_malla(malla_nivel, malla_simulacion);
         simulacion = inicializar_simulacion(malla_simulacion);
         nivel_s = true;
-    }
-    //bool estoy_dibujando = false;
+    }*/
     int coordx = 0, coordy = 0;
     int iniciox, inicioy;
-    int nivel = 3;
-    
-    
-    malla_t *malla_principal = crear_malla();
+
+    malla_t *malla_construir;
     
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
-    inicializar_nivel(malla_principal, nivel);
+    
 
-    //masa_t *masa_fija = nueva_masa_fija(malla_principal, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
+    //masa_t *masa_fija = nueva_masa_fija(malla_construir, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
     bool simulando = false;
     bool desplazando = false;
     bool dibujando = false;
@@ -113,13 +115,20 @@ int main(int argc, char *argv[]) {
                 break;
 
             // BEGIN código del alumno
-        
+
+            if(construir) {
+                malla_construir = crear_malla();
+                inicializar_nivel(malla_construir, nivel);
+                printf("%d\n", nivel);
+                construir = false;
+                paso_de_nivel = false;
+            }
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 
                 iniciox = event.motion.x;
                 inicioy = event.motion.y;
                 if(!simulando){
-                    masa_desplazamiento = detectar_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
+                    masa_desplazamiento = detectar_masa(malla_construir, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
                     if(masa_desplazamiento != NULL && !es_fija(masa_desplazamiento)){
                         desplazando = true;
                     }
@@ -130,8 +139,8 @@ int main(int argc, char *argv[]) {
                 coordy = event.motion.y;
 
                 if(dibujando){
-                    en_rango = !excede_max_longitud(malla_principal, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
-                    if(excede_max_longitud(malla_principal, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA)){
+                    en_rango = !excede_max_longitud(malla_construir, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
+                    if(excede_max_longitud(malla_construir, masa_aux, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA)){
                         cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                         en_rango = false;
 
@@ -142,7 +151,7 @@ int main(int argc, char *argv[]) {
                 }
 
                 if(desplazando){
-                    mover_masa(malla_principal, masa_desplazamiento, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
+                    mover_masa(malla_construir, masa_desplazamiento, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
                 }
             }
             else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
@@ -152,11 +161,11 @@ int main(int argc, char *argv[]) {
 
                     if(comparar_puntos(iniciox, inicioy, event.motion.x, event.motion.y, TOL_CLIC)){
 
-                        masa_detectada = detectar_masa(malla_principal, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
+                        masa_detectada = detectar_masa(malla_construir, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
 
                         if(!dibujando){
                             if(masa_detectada == NULL){
-                                nueva_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
+                                nueva_masa(malla_construir, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
 
                             }else{
                                 masa_aux = masa_detectada;
@@ -166,8 +175,8 @@ int main(int argc, char *argv[]) {
                             dibujando = false;
 
                         }else if(masa_detectada == NULL){
-                            masa = nueva_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
-                            nuevo_resorte(malla_principal, masa_aux, masa, COLOR_RESORTE);
+                            masa = nueva_masa(malla_construir, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TAM/FACTOR_ESCALA, COLOR_MASA);
+                            nuevo_resorte(malla_construir, masa_aux, masa, COLOR_RESORTE);
                             
                             
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
@@ -177,9 +186,9 @@ int main(int argc, char *argv[]) {
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
                             
-                        }else if(masa_detectada != NULL && !masas_conectadas(malla_principal, masa_aux, masa_detectada)){
-                            nuevo_resorte(malla_principal, masa_aux, masa_detectada, COLOR_RESORTE);
-                            
+                        }else if(masa_detectada != NULL && !masas_conectadas(malla_construir, masa_aux, masa_detectada)){
+                            nuevo_resorte(malla_construir, masa_aux, masa_detectada, COLOR_RESORTE);
+                    
                             cambiar_color_masa(masa_aux, COLOR_MASA, COLOR_MASA_FIJA);
                             dibujando = false;
 
@@ -196,21 +205,22 @@ int main(int argc, char *argv[]) {
             }
             else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
 
-                masa = detectar_masa(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
-                resorte = detectar_resorte(malla_principal, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_RESORTES/FACTOR_ESCALA);
+                masa = detectar_masa(malla_construir, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_MASAS/FACTOR_ESCALA);
+                resorte = detectar_resorte(malla_construir, iniciox/FACTOR_ESCALA, inicioy/FACTOR_ESCALA, TOL_RESORTES/FACTOR_ESCALA);
 
                 if(comparar_puntos(iniciox, inicioy, event.motion.x, event.motion.y, TOL_CLIC)){
                     if(!simulando){
                         if(!dibujando){
                             if(masa != NULL && !es_fija(masa)){
-                                borrar_masa(malla_principal, masa);
-                                borrar_resortes_conectados(malla_principal, masa);
+                                borrar_masa(malla_construir, masa);
+                                borrar_resortes_conectados(malla_construir, masa);
                             }else if(resorte != NULL){
-                                borrar_resorte(malla_principal, resorte);
+                                borrar_resorte(malla_construir, resorte);
                             }else{
                                 simulando = true;
                                 malla_simulacion = crear_malla();
-                                copiar_malla(malla_principal, malla_simulacion);
+                                copiar_malla(malla_construir, malla_simulacion);
+                                simulacion = simu_crear();
                                 simulacion = inicializar_simulacion(malla_simulacion);
                             }
                         }else{
@@ -220,6 +230,7 @@ int main(int argc, char *argv[]) {
                     }else{
                         destruir_malla(malla_simulacion);
                         simulando = false;
+                        tiempo = 0;
                     }
                 }
             }
@@ -239,11 +250,14 @@ int main(int argc, char *argv[]) {
         sprintf(aux, "%03d, %03d", coordx, coordy);
         escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
 
-        if(simulando){
+        if(simulando && tiempo <= 10){
             escribir_texto(renderer, font, "SIMULANDO", 100, 20);
             char aux[100];
             sprintf(aux, "%03d, %03d", coordx, coordy);
             escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
+            char t[100];
+            sprintf(t, "%03f", tiempo);
+            escribir_texto(renderer, font, t, VENTANA_ANCHO - 300, VENTANA_ALTO - 200);
         }
 #endif
 
@@ -253,26 +267,51 @@ int main(int argc, char *argv[]) {
             planear_resorte(masa_detectada, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, COLOR_CONSTRUCCION, renderer);
         }
 
-        if(simulando){
+        if(simulando && tiempo <= 10){
             size_t ciclos = 1.0 / JUEGO_FPS / DT;
             for(size_t i = 0; i < ciclos; i++) {
                 reordenar_id(malla_simulacion);
                 simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
+                tiempo += DT;
             }
+            
             renderizar_malla(malla_simulacion, renderer);
 
-        } else if (!nivel_s) {
-            renderizar_malla(malla_principal, renderer);
+        } else if (!construir) {
+            renderizar_malla(malla_construir, renderer);
+        }
+
+        if(tiempo > 10) {
+            destruir_malla(malla_simulacion);
+            simulando = false;
+            tiempo = 0;
+            paso_de_nivel = true;
+        }
+
+        if(paso_de_nivel) {
+            printf("Paso de nivel\n");
+            FILE *f_salida = fopen(niveles, "wb");
+            if (f_salida == NULL) {
+		        return 1;
+	        }
+            if(!guardar_nivel(f_salida, malla_construir)) {
+                fclose(f_salida);
+                return 1;
+            }
+            destruir_malla(malla_construir);
+            nivel++;
+            construir = true;
+            paso_de_nivel = false;
         }
         
-        if (nivel_s) {
+        /*if (nivel_s) {
             size_t ciclos = 1.0 / JUEGO_FPS / DT;
             for(size_t i = 0; i < ciclos; i++) {
                 reordenar_id(malla_simulacion);
                 simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
             }
             renderizar_malla(malla_simulacion, renderer);
-        }
+        }*/
 
         // END código del alumno
 
@@ -290,18 +329,9 @@ int main(int argc, char *argv[]) {
     }
 
     // BEGIN código del alumno
-    // Guardar nivel
-    char niveles[] = "nivel_#.bin";
-    niveles[6] = nivel + '0';
-    FILE *f_salida = fopen(niveles, "wb");
-    if (f_salida == NULL) {
-		return 1;
-	}
-
-    if(!guardar_nivel(f_salida, malla_principal)) {
-        fclose(f_salida);
-        return 1;
-    }
+    simu_destruir(simulacion, destruir_instante);
+    destruir_malla(malla_construir);
+    
     // END código del alumno
 
     SDL_DestroyRenderer(renderer);

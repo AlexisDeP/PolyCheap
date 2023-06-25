@@ -5,7 +5,7 @@
 #include "dibujo.h"
 #include "calculo.h"
 #include "lista.h"
-
+#include "config.h"
 
 
 struct masa {
@@ -79,7 +79,7 @@ void simu_remover_inst(simulacion_t* simulacion) {      // Cuidado con la memori
     lista_borrar_primero(simulacion->instantes);
 }
 
-static bool simu_agregar_inst(simulacion_t* simulacion, posicion_t* posiciones, size_t cantidad_masas, longitud_t* longitudes, size_t cantidad_resortes) {
+/*static bool simu_agregar_inst(simulacion_t* simulacion, posicion_t* posiciones, size_t cantidad_masas, longitud_t* longitudes, size_t cantidad_resortes) {
     if (simulacion == NULL || posiciones == NULL) return false;
 
     instante_t* instante = malloc(sizeof(instante_t));
@@ -102,7 +102,7 @@ static bool simu_agregar_inst(simulacion_t* simulacion, posicion_t* posiciones, 
     }
 
     return true;
-}
+}*/
 
 static instante_t* simu_inst_ant(simulacion_t* simulacion) {
     lista_iter_t *iter = lista_iter_crear(simulacion->instantes);
@@ -148,7 +148,7 @@ static instante_t* crear_instante(size_t cantidad_masas, size_t cantidad_resorte
     return instante;
 }
 
-void destruir_instante(instante_t *instante) {
+void destruir_instante(void *instante) {
     if(instante == NULL) return;
 
     instante_t* inst = (instante_t*)instante;
@@ -412,8 +412,14 @@ static void convertir_instante_a_malla(instante_t *instante, malla_t *malla) {
     }
 
     while(!lista_iter_al_final(iter_resortes)) {
-        size_t id_resorte = buscar_id_resorte(lista_iter_ver_actual(iter_resortes));
-        actualizar_longitud_resorte(lista_iter_ver_actual(iter_resortes), instante->longitudes[id_resorte].l);
+        resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
+        size_t id_resorte = buscar_id_resorte(resorte);
+        actualizar_longitud_resorte(resorte, instante->longitudes[id_resorte].l);
+        if(resorte->longitud > LO_MAX/FACTOR_ESCALA){
+            resorte->color = COLOR_ROJO_FUERTE;
+        }else{
+            resorte->color = COLOR_CELESTE;
+        }
         lista_iter_avanzar(iter_resortes);
     }
 
