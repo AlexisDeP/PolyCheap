@@ -8,7 +8,7 @@
 #define DT 0.0005
 #define DURACION_SIMULACION 10.0
 
-#define G 9.81                      // Gravedad
+#define G 9.81              // Gravedad
 #define G_JUPITER 24.79
 #define G_MARTE 3.71
 #define G_LUNA 1.62

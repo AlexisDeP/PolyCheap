@@ -6,8 +6,8 @@ OBJS = $(SRCS:.c=.o)
 
 all: $(PROGRAM)
 
-$(PROGRAM): color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o main.o
-	$(CC) color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o main.o -o $(PROGRAM) $(LDFLAGS)
+$(PROGRAM): color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o juego.o main.o
+	$(CC) color.o resorte.o masa.o malla.o dibujo.o calculo.o lista.o simulacion.o juego.o main.o -o $(PROGRAM) $(LDFLAGS)
 
 lista.o: lista.c lista.h
 	$(CC) $(CFLAGS) -c lista.c
@@ -27,16 +27,16 @@ malla.o: malla.c malla.h masa.h resorte.h color.h calculo.h lista.h
 dibujo.o: dibujo.c dibujo.h color.h malla.h calculo.h lista.h
 	$(CC) $(CFLAGS) -c dibujo.c
 
-juego.o: juego.c juego.h malla.h
-	$(CC) $(CFLAGS) -c juego.c
-
 calculo.o: calculo.c calculo.h
 	$(CC) $(CFLAGS) -c calculo.c
 
 simulacion.o: simulacion.c simulacion.h lista.h malla.h calculo.h
 	$(CC) $(CFLAGS) -c simulacion.c
 
-main.o: main.c dibujo.h malla.h config.h calculo.h simulacion.h
+juego.o: juego.c juego.h malla.h
+	$(CC) $(CFLAGS) -c juego.c
+
+main.o: main.c dibujo.h malla.h config.h calculo.h simulacion.h juego.h
 	$(CC) $(CFLAGS) -c main.c
 
 clean:

@@ -74,6 +74,7 @@ bool masas_conectadas(malla_t *malla, masa_t *m1, masa_t *m2);
 //Post: Devuelve true si excede una longitud maxima, false en caso contrario.
 bool excede_max_longitud(malla_t *malla, masa_t *masa, float x, float y, float maxima_longitud);
 
+void insertar_masa(malla_t *malla, masa_t *masa);
 
 size_t obtener_cantidad_masas(const malla_t* malla);
 
@@ -92,5 +93,7 @@ void reordenar_id(const malla_t *malla);
 size_t buscar_id_resorte(resorte_t *resorte);
 
 size_t buscar_id_masa(masa_t *masa);
+
+masa_t *buscar_masa_id(malla_t *malla, size_t id_masa);
 
 #endif

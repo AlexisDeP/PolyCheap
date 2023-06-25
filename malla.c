@@ -8,7 +8,7 @@
 
 struct masa {
     size_t id;
-    float x, y, tam;           // FLOAT O float???
+    float x, y, tam;   
     bool es_fijo;
     float masa;
     Color color;
@@ -26,21 +26,7 @@ struct malla {
     lista_t* masas;
 };
 
-
-//static void _renovar_longitud_resortes(malla_t *malla, masa_t *masa) {
-//   lista_iter_t *iter = lista_iter_crear(malla->resortes);
-//    while (!lista_iter_al_final(iter)) {
-//        resorte_t *resorte = lista_iter_ver_actual(iter);
-//        if (resorte->masa1 == masa || resorte->masa2 == masa) {
-//            float nueva_longitud = distancia_entre_masas(resorte->masa1, resorte->masa2);
-//            resorte->longitud = nueva_longitud;
-//        }
-//        lista_iter_avanzar(iter);
-//    }
-//    lista_iter_destruir(iter);
-//}                  
-
-static void insertar_masa(malla_t *malla, masa_t *masa) {
+void insertar_masa(malla_t *malla, masa_t *masa) {
     masa->id = obtener_cantidad_masas(malla);
     lista_insertar_ultimo(malla->masas, masa);
 
@@ -381,8 +367,6 @@ void reordenar_id(const malla_t *malla) {
     for(size_t i = 0; i < cant_resortes; i++) {
         resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
         resorte->id = i;
-        resorte->masa1->id = 0;
-        resorte->masa2->id = 1;
         
         lista_iter_avanzar(iter_resortes);
     }
@@ -395,4 +379,19 @@ size_t buscar_id_resorte(resorte_t *resorte) {
 
 size_t buscar_id_masa(masa_t *masa) {
     return masa->id;
+}
+
+masa_t *buscar_masa_id(malla_t *malla, size_t id_masa) {
+    lista_iter_t *iter = lista_iter_crear(malla->masas);
+    while(!lista_iter_al_final(iter)) {
+        masa_t *masa = lista_iter_ver_actual(iter);
+        if(masa->id == id_masa) {
+            lista_iter_destruir(iter);
+            return masa;
+        }
+        lista_iter_avanzar(iter);
+    }
+
+    lista_iter_destruir(iter);
+    return NULL;
 }

@@ -50,5 +50,5 @@ float k(float kb, float l0, float pk) {
 }
 
 float _sumatoria_bj(float kb, float pk, float pj1, float pk1, float rl0, float rl1) {
-    return (k(kb, rl0, pk) * ((rl0 - rl1)/rl1) * (pj1 - pk1));
+    return k(kb, rl0, pk) * ((rl0 - rl1) / rl1) * (pj1 - pk1);
 }

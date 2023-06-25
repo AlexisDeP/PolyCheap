@@ -25,7 +25,7 @@ resorte_t *crear_resorte(masa_t *masa1, masa_t *masa2, Color color) {
     resorte->id = 0;  // Asigna un ID adecuado según tus necesidades
     resorte->masa1 = masa1;
     resorte->masa2 = masa2;
-    resorte->longitud = 0; 
+    resorte->longitud = distancia_entre_masas(masa1, masa2); 
     resorte->k_resorte = 0;
     resorte->color = color;  // Define el color por defecto
     

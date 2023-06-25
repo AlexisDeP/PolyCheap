@@ -8,6 +8,7 @@
 #include "simulacion.h"
 #include "masa.h"
 #include "resorte.h"
+#include "juego.h"
 
 struct masa {
     size_t id;
@@ -26,9 +27,6 @@ struct resorte {
 
 #ifdef TTF
 #include <SDL2/SDL_ttf.h>
-
-
-
 
 void escribir_texto(SDL_Renderer *renderer, TTF_Font *font, const char *s, int x, int y) {
     SDL_Color color = {255, 255, 255};  // Estaría bueno si la función recibe un enumerativo con el color, ¿no?
@@ -71,18 +69,37 @@ int main(int argc, char *argv[]) {
     int dormir = 0;
 
     // BEGIN código del alumno
+    //Simulacion // Nivel
+    bool nivel_s = false;
+    malla_t *malla_nivel= crear_malla();
+    malla_t *malla_simulacion = crear_malla();
+    simulacion_t *simulacion = simu_crear();
+    if(argc == 2) {
+        FILE *f_entrada = fopen(argv[1], "rb"); 
+	    if (f_entrada == NULL) {
+		    return 1;
+	    }
+        if(!abrir_nivel(f_entrada, malla_nivel)) {
+		    return 1;
+        }
+        fclose(f_entrada);
+        copiar_malla(malla_nivel, malla_simulacion);
+        simulacion = inicializar_simulacion(malla_simulacion);
+        nivel_s = true;
+    }
     //bool estoy_dibujando = false;
     int coordx = 0, coordy = 0;
     int iniciox, inicioy;
-
+    int nivel = 3;
+    
+    
     malla_t *malla_principal = crear_malla();
-    malla_t *malla_simulacion = crear_malla();
-    simulacion_t *simulacion = simu_crear();
+    
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
+    inicializar_nivel(malla_principal, nivel);
 
     //masa_t *masa_fija = nueva_masa_fija(malla_principal, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
-
     bool simulando = false;
     bool desplazando = false;
     bool dibujando = false;
@@ -96,6 +113,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             // BEGIN código del alumno
+        
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 
                 iniciox = event.motion.x;
@@ -234,11 +252,24 @@ int main(int argc, char *argv[]) {
         }
 
         if(simulando){
-            reordenar_id(malla_simulacion);
-            simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K, LO_MAX/FACTOR_ESCALA);
+            size_t ciclos = 1.0 / JUEGO_FPS / DT;
+            for(size_t i = 0; i < ciclos; i++) {
+                reordenar_id(malla_simulacion);
+                simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
+            }
             renderizar_malla(malla_simulacion, renderer);
-        } else {
+
+        } else if (!nivel_s) {
             renderizar_malla(malla_principal, renderer);
+        }
+        
+        if (nivel_s) {
+            size_t ciclos = 1.0 / JUEGO_FPS / DT;
+            for(size_t i = 0; i < ciclos; i++) {
+                reordenar_id(malla_simulacion);
+                simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
+            }
+            renderizar_malla(malla_simulacion, renderer);
         }
 
         // END código del alumno
@@ -257,6 +288,20 @@ int main(int argc, char *argv[]) {
     }
 
     // BEGIN código del alumno
+    // Guardar nivel
+    char niveles[] = "nivel_#.bin";
+    niveles[6] = nivel + '0';
+    FILE *f_salida = fopen(niveles, "wb");
+    if (f_salida == NULL) {
+		return 1;
+	}
+
+    if(!guardar_nivel(f_salida, malla_principal)) {
+        fclose(f_salida);
+        return 1;
+    }
+
+
     // END código del alumno
 
     SDL_DestroyRenderer(renderer);

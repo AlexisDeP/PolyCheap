@@ -19,6 +19,6 @@ void destruir_posicion(void* dato);
 
 void destruir_instante(instante_t *instante);
 
-void simular_malla(malla_t *malla, simulacion_t *simu, float tiempo, float m, float dt, float b, float g, float kb, float pk, float longitud_maxima);
+void simular_malla(malla_t *malla, simulacion_t *simu, float tiempo, float m, float dt, float b, float g, float kb, float pk);
 
 #endif
