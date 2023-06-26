@@ -4,7 +4,6 @@
 
 #include "calculo.h"
 
-
 bool comparar_puntos(float x1, float y1, float x2, float y2, float tolerancia){
 
     float diferencia_x = abs(x1 - x2);
@@ -20,10 +19,6 @@ float distancia_puntos(float x1, float y1, float x2, float y2) {
     float dy = y2 - y1;
     return sqrt(dx * dx + dy * dy);
 }                                                       //Quizas reemplazable con:
-
-float norma(float x, float y) {
-    return sqrt(x * x + y * y);
-}   
 
 float distancia_punto_a_recta(float xp1, float yp1, float xp2, float yp2, float x_punto, float y_punto){
     

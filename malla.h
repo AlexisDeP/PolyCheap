@@ -5,6 +5,7 @@
 
 #include "masa.h"
 #include "resorte.h"
+#include "lista.h"
 
 typedef struct malla malla_t;
 
@@ -19,6 +20,10 @@ void borrar_masa(malla_t *malla, masa_t *masa);
 //Post: La malla contiene a la masa
 //      Devuelve la masa creada
 masa_t *nueva_masa(malla_t *malla, float x, float y, float tam, Color color);
+
+lista_t* obtener_lista_masas_malla(struct malla* malla);
+
+lista_t* obtener_lista_resortes_malla(struct malla* malla);
 
 //Crea una masa dentro una malla en una posicion fija (x, y) con un tamaño y un color.
 //Pre: La malla existe.
@@ -84,15 +89,11 @@ size_t obtener_cantidad_resortes(const malla_t* malla);
 //Post: Devuelve la malla creada.
 malla_t *crear_malla();
 
-bool copiar_malla(const malla_t *malla, malla_t *malla_copia);
+void copiar_malla(const malla_t *malla, malla_t *malla_copia);
 
 void reordenar_malla(const malla_t *malla);
 
 void reordenar_id(const malla_t *malla);
-
-size_t buscar_id_resorte(resorte_t *resorte);
-
-size_t buscar_id_masa(masa_t *masa);
 
 masa_t *buscar_masa_id(malla_t *malla, size_t id_masa);
 

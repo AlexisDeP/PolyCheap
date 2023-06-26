@@ -20,4 +20,6 @@ bool guardar_nivel(FILE *f, malla_t *malla);
 //Post: El nivel se copia en la malla.
 bool abrir_nivel(FILE *f, malla_t *malla);
 
+int cantidad_de_puntos(malla_t *malla, int nivel);
+
 #endif

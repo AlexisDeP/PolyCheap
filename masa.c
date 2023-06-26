@@ -54,8 +54,56 @@ bool es_fija(masa_t *masa){
     return masa->es_fijo;
 }
 
+float obtener_x_masa(masa_t *masa) {
+    return masa->x;
+}
+
+float obtener_y_masa(masa_t *masa) {
+    return masa->y;
+}
+
+float obtener_tam_masa(masa_t *masa) {
+    return masa->tam;
+}
+
+size_t obtener_id_masa(masa_t *masa) {
+    return masa->id;
+}
+
+Color obtener_color_masa(masa_t *masa) {
+    return masa->color;
+}
+
+bool obtener_es_fijo_masa(masa_t *masa) {
+    return masa->es_fijo;
+}
+
+float obtener_masa_masa(masa_t *masa) {
+    return masa->masa;
+}
+
+void cambiar_x_masa(masa_t *masa, float x) {
+    masa->x = x;
+}
+
+void cambiar_y_masa(masa_t *masa, float y) {
+    masa->y = y;
+}
+
 void cambiar_color_masa(masa_t *masa, Color color_masa, Color color_masa_fija) {
     masa->color = masa->es_fijo ? color_masa_fija : color_masa;
+}
+
+void cambiar_id_masa(masa_t *masa, size_t id) {
+    masa->id = id;
+}
+
+void cambiar_es_fijo_masa(masa_t *masa, bool es_fijo) {
+    masa->es_fijo = es_fijo;
+}
+
+void cambiar_masa_masa(masa_t *masa, float m) {
+    masa->masa = m;
 }
 
 masa_t *_copiar_masa(const masa_t *masa) {

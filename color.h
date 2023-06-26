@@ -17,6 +17,6 @@ typedef enum color {
 
 } Color;
 
-void _color_render(SDL_Renderer *renderer, Color color, uint8_t opacidad);
+void definir_color(SDL_Renderer *renderer, Color color, uint8_t opacidad);
 
 #endif

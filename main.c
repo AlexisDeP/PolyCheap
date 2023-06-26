@@ -70,39 +70,35 @@ int main(int argc, char *argv[]) {
 
     // BEGIN código del alumno
     //Simulacion // Nivel
+    bool simulando = false;
     float tiempo = 0;
     bool construir = true;
-    int nivel = 3;
-    bool paso_de_nivel = false;
+    int nivel = 0;
+    int puntos = 0;
     char niveles[] = "nivel_#.bin";
-    niveles[6] = nivel + '0';
     malla_t *malla_simulacion;
+    malla_t *malla_construir;
     simulacion_t *simulacion;
-    /*if(argc == 2) {
+    if(argc == 2) {
+        malla_simulacion = crear_malla();
+        malla_construir = crear_malla();
         FILE *f_entrada = fopen(argv[1], "rb"); 
-	    if (f_entrada == NULL) {
-		    return 1;
-	    }
-        if(!abrir_nivel(f_entrada, malla_nivel)) {
+	    if (f_entrada == NULL) return 1;
+        if(!abrir_nivel(f_entrada, malla_simulacion)) {
+            fclose(f_entrada);
 		    return 1;
         }
         fclose(f_entrada);
-        malla_simulacion = crear_malla();
-        copiar_malla(malla_nivel, malla_simulacion);
+        copiar_malla(malla_construir, malla_simulacion);
         simulacion = inicializar_simulacion(malla_simulacion);
-        nivel_s = true;
-    }*/
+        simulando = true;
+    }
     int coordx = 0, coordy = 0;
     int iniciox, inicioy;
-
-    malla_t *malla_construir;
     
     masa_t *masa, *masa_desplazamiento, *masa_detectada, *masa_aux;
     resorte_t *resorte;
     
-
-    //masa_t *masa_fija = nueva_masa_fija(malla_construir, 100, 100, TAM, COLOR_MASA_FIJA);   // Solo para pruebas
-    bool simulando = false;
     bool desplazando = false;
     bool dibujando = false;
     bool en_rango = false;
@@ -119,9 +115,7 @@ int main(int argc, char *argv[]) {
             if(construir) {
                 malla_construir = crear_malla();
                 inicializar_nivel(malla_construir, nivel);
-                printf("%d\n", nivel);
                 construir = false;
-                paso_de_nivel = false;
             }
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 
@@ -133,8 +127,8 @@ int main(int argc, char *argv[]) {
                         desplazando = true;
                     }
                 }
-            }
-            else if(event.type == SDL_MOUSEMOTION) {
+
+            } else if(event.type == SDL_MOUSEMOTION) {
                 coordx = event.motion.x;
                 coordy = event.motion.y;
 
@@ -153,10 +147,9 @@ int main(int argc, char *argv[]) {
                 if(desplazando){
                     mover_masa(malla_construir, masa_desplazamiento, event.motion.x/FACTOR_ESCALA, event.motion.y/FACTOR_ESCALA, LO_MAX/FACTOR_ESCALA);
                 }
-            }
-            else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+            } else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
                 
-                if(!simulando){ //Bool 
+                if(!simulando){ 
                     desplazando = false;
 
                     if(comparar_puntos(iniciox, inicioy, event.motion.x, event.motion.y, TOL_CLIC)){
@@ -220,6 +213,7 @@ int main(int argc, char *argv[]) {
                                 simulando = true;
                                 malla_simulacion = crear_malla();
                                 copiar_malla(malla_construir, malla_simulacion);
+                                reordenar_id(malla_simulacion);
                                 simulacion = simu_crear();
                                 simulacion = inicializar_simulacion(malla_simulacion);
                             }
@@ -234,6 +228,8 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
+            
+
             // END código del alumno
 
             continue;
@@ -249,6 +245,10 @@ int main(int argc, char *argv[]) {
         char aux[100];
         sprintf(aux, "%03d, %03d", coordx, coordy);
         escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
+        
+        char pts[100];
+        sprintf(pts, "%03d", puntos);
+        escribir_texto(renderer, font, pts, VENTANA_ANCHO - 100, 50);
 
         if(simulando && tiempo <= 10){
             escribir_texto(renderer, font, "SIMULANDO", 100, 20);
@@ -257,11 +257,11 @@ int main(int argc, char *argv[]) {
             escribir_texto(renderer, font, aux, VENTANA_ANCHO - 100, VENTANA_ALTO - 34);
             char t[100];
             sprintf(t, "%03f", tiempo);
-            escribir_texto(renderer, font, t, VENTANA_ANCHO - 300, VENTANA_ALTO - 200);
+            escribir_texto(renderer, font, t, VENTANA_ANCHO - 200, 20);
         }
+
+        
 #endif
-
-
 
         if(dibujando && en_rango){
             planear_resorte(masa_detectada, coordx/FACTOR_ESCALA, coordy/FACTOR_ESCALA, COLOR_CONSTRUCCION, renderer);
@@ -270,7 +270,6 @@ int main(int argc, char *argv[]) {
         if(simulando && tiempo <= 10){
             size_t ciclos = 1.0 / JUEGO_FPS / DT;
             for(size_t i = 0; i < ciclos; i++) {
-                reordenar_id(malla_simulacion);
                 simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
                 tiempo += DT;
             }
@@ -282,41 +281,30 @@ int main(int argc, char *argv[]) {
         }
 
         if(tiempo > 10) {
+
+            if(!cumple_porcentaje_estiramiento(simulacion, MAXIMO_ESTIRAMIENTO)) {
+                niveles[6] = nivel + '0';
+                FILE *f_salida = fopen(niveles, "wb");
+                if (f_salida == NULL) return 1;
+                if(!guardar_nivel(f_salida, malla_construir)) {
+                    fclose(f_salida);
+                    return 1;
+                }
+                puntos += cantidad_de_puntos(malla_construir, nivel);
+                destruir_malla(malla_construir);
+                if(fclose(f_salida) == EOF) return 1;
+                construir = true;
+                nivel++;
+            }
+
+            tiempo = 0;
             destruir_malla(malla_simulacion);
             simulando = false;
-            tiempo = 0;
-            paso_de_nivel = true;
         }
 
-        if(paso_de_nivel) {
-            printf("Paso de nivel\n");
-            FILE *f_salida = fopen(niveles, "wb");
-            if (f_salida == NULL) {
-		        return 1;
-	        }
-            if(!guardar_nivel(f_salida, malla_construir)) {
-                fclose(f_salida);
-                return 1;
-            }
-            destruir_malla(malla_construir);
-            nivel++;
-            construir = true;
-            paso_de_nivel = false;
-        }
         
-        /*if (nivel_s) {
-            size_t ciclos = 1.0 / JUEGO_FPS / DT;
-            for(size_t i = 0; i < ciclos; i++) {
-                reordenar_id(malla_simulacion);
-                simular_malla(malla_simulacion, simulacion, DURACION_SIMULACION, MASA_TOTAL, DT, B, G, K_BASE, POTENCIA_K);
-            }
-            renderizar_malla(malla_simulacion, renderer);
-        }*/
-
+        
         // END código del alumno
-
-        
-
         SDL_RenderPresent(renderer);
         ticks = SDL_GetTicks() - ticks;
         if(dormir) {
@@ -327,7 +315,6 @@ int main(int argc, char *argv[]) {
             SDL_Delay(1000 / JUEGO_FPS - ticks);
         ticks = SDL_GetTicks();
     }
-
     // BEGIN código del alumno
     simu_destruir(simulacion, destruir_instante);
     destruir_malla(malla_construir);

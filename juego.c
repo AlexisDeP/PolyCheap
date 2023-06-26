@@ -1,33 +1,15 @@
+#include "masa.h"
+#include "resorte.h"
 #include "malla.h"
 #include "juego.h"
 #include "color.h"
 #include "lista.h"
-
-struct masa {
-    size_t id;
-    float x, y, tam;          
-    bool es_fijo;
-    float masa;
-    Color color;
-};
-
-struct resorte {
-    size_t id;
-    struct masa *masa1, *masa2;
-    float longitud, k_resorte;
-    Color color;
-};
-
-struct malla {
-    lista_t* resortes;
-    lista_t* masas;
-};
-
+#include "config.h"
 
 void inicializar_nivel(malla_t *malla, int nivel) {
     
-    masa_t *masa_A = crear_masa_fija(100 / 50, 400 / 50, 22 / 50.0, COLOR_BLANCO);
-    masa_t *masa_B = crear_masa_fija((nivel * 100) / 50, 400 / 50, 22 / 50.0, COLOR_BLANCO);
+    masa_t *masa_A = crear_masa_fija( (TAM*5) / FACTOR_ESCALA, 300 / FACTOR_ESCALA, TAM / FACTOR_ESCALA, COLOR_BLANCO);
+    masa_t *masa_B = crear_masa_fija( ((TAM * 4) + (nivel * TAM * 2) + (TAM*5)) / FACTOR_ESCALA , 300 / FACTOR_ESCALA, TAM / FACTOR_ESCALA, COLOR_BLANCO);
 
     insertar_masa(malla, masa_A);
     insertar_masa(malla, masa_B);
@@ -110,17 +92,17 @@ bool guardar_nivel(FILE *f, malla_t *malla) {
 
     size_t cant_masas = obtener_cantidad_masas(malla);
 	if(!escribir_numero_de_datos(f, cant_masas)) return false;
-    printf("NM: %zd\n", cant_masas);
+    //printf("NM: %zd\n", cant_masas);
 
-    lista_iter_t *iter_masas = lista_iter_crear(malla->masas);
+    lista_iter_t *iter_masas = lista_iter_crear(obtener_lista_masas_malla(malla));
     while(!lista_iter_al_final(iter_masas)) {
 
         masa_t *masa = lista_iter_ver_actual(iter_masas);
-        if(!escribir_masa(f, masa->id, masa->x, masa->y, masa->tam, masa->es_fijo, masa->masa, masa->color)) {
+        if(!escribir_masa(f, obtener_id_masa(masa), obtener_x_masa(masa), obtener_y_masa(masa), obtener_tam_masa(masa), obtener_es_fijo_masa(masa), obtener_masa_masa(masa), obtener_color_masa(masa))) {
             lista_iter_destruir(iter_masas);
             return false;
         }
-        printf("\tID:%zd x: %f, y: %f, tam: %f, es_fijo: %d, masa: %f\n", masa->id, masa->x, masa->y, masa->tam, masa->es_fijo, masa->masa);
+        //printf("\tID:%zd x: %f, y: %f, tam: %f, es_fijo: %d, masa: %f\n", masa->id, masa->x, masa->y, obtener_tam_masa(masa), masa->es_fijo, masa->masa);
         lista_iter_avanzar(iter_masas);
 
     }
@@ -128,17 +110,17 @@ bool guardar_nivel(FILE *f, malla_t *malla) {
 
     size_t cant_resortes = obtener_cantidad_resortes(malla);
 	if(!escribir_numero_de_datos(f, cant_resortes)) return false;
-    printf("NM: %zd\n", cant_resortes);
+    //printf("NM: %zd\n", cant_resortes);
 
-    lista_iter_t *iter_resortes = lista_iter_crear(malla->resortes);
+    lista_iter_t *iter_resortes = lista_iter_crear(obtener_lista_resortes_malla(malla));
     while(!lista_iter_al_final(iter_resortes)) {
 
         resorte_t *resorte = lista_iter_ver_actual(iter_resortes);
-        if(!escribir_resorte(f, resorte->id, resorte->masa1->id, resorte->masa2->id, resorte->longitud, resorte->color)) {
+        if(!escribir_resorte(f, obtener_id_resorte(resorte), obtener_id_masa(obtener_masa1_resorte(resorte)), obtener_id_masa(obtener_masa2_resorte(resorte)), obtener_longitud_resorte(resorte), obtener_color_resorte(resorte))) {
             lista_iter_destruir(iter_resortes);
             return false;
         }
-        printf("\tID:%zd x: %zd, y: %zd, longitud: %f\n", resorte->id, resorte->masa1->id, resorte->masa2->id, resorte->longitud);
+        //printf("\tID:%zd x: %zd, y: %zd, longitud: %f\n", resorte->id, resorte->masa1->id, resorte->masa2->id, resorte->longitud);
         lista_iter_avanzar(iter_resortes);
 
     }
@@ -164,9 +146,9 @@ bool abrir_nivel(FILE *f, malla_t *malla) {
         
         if (!leer_masa(f, &id, &x, &y, &tam, &es_fijo, &masa_m, &color)) return false;
         masa_t *masa = nueva_masa(malla, x, y, tam, color);
-        masa->es_fijo = es_fijo;
-        masa->id = id;
-        masa->masa = masa_m;
+        cambiar_es_fijo_masa(masa, es_fijo);
+        cambiar_id_masa(masa, id);
+        cambiar_masa_masa(masa, masa_m);
     }
 
     size_t cant_resortes = 0;
@@ -187,4 +169,8 @@ bool abrir_nivel(FILE *f, malla_t *malla) {
 
     return true;
 
+}
+
+int cantidad_de_puntos(malla_t *malla, int nivel) {
+    return obtener_cantidad_resortes(malla);
 }

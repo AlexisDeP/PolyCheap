@@ -8,9 +8,6 @@ bool comparar_puntos(float x1, float y1, float x2, float y2, float tolerancia);
 // Devuelve la distancia entre dos puntos (x, y)
 float distancia_puntos(float x1, float y1, float x2, float y2);
 
-// Devuelve la norma de un vector R2
-float norma(float x, float y);
-
 // Devuelve la distancia mas cercana de un punto (x, y) a una recta (creada por dos puntos)
 float distancia_punto_a_recta(float xp1, float yp1, float xp2, float yp2, float x_punto, float y_punto);
 

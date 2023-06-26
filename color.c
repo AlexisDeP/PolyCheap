@@ -2,7 +2,7 @@
 
 #include "color.h"
 
-void _color_render(SDL_Renderer *renderer, Color color, uint8_t opacidad){
+void definir_color(SDL_Renderer *renderer, Color color, uint8_t opacidad){
 
     uint8_t r = (color >> 16) & 0xFF;
     uint8_t g = (color >> 8 ) & 0xFF;

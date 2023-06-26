@@ -21,4 +21,6 @@ void destruir_instante(void *instante);
 
 void simular_malla(malla_t *malla, simulacion_t *simu, float tiempo, float m, float dt, float b, float g, float kb, float pk);
 
+bool cumple_porcentaje_estiramiento(simulacion_t *simulacion, float porcentaje_maximo);
+
 #endif
